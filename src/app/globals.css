@@ -24,10 +24,17 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+  font-family: "BMJUA_ttf", Arial, sans-serif;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+@font-face {
+  font-family: "BMJUA_ttf";
+  font-weight: 200;
+  src: url("/fonts/BMJUA_ttf.ttf") format("truetype");
 }
