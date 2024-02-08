@@ -37,13 +37,13 @@ export default function RootLayout({
             style={{ zIndex: -1 }}
           />
           <div
-            className="flex items-center justify-center w-full h-full bg-black bg-opacity-50"
+            className="flex items-center justify-center w-full h-full bg-black bg-opacity-60"
             style={{ zIndex: 1 }}
           >
-            <main className="flex flex-col h-screen rounded-md">
+            <main className="flex flex-col h-screen w-[600px]">
               <Header />
               {/* <div className="border"></div> */}
-              <div className="h-screen bg-[#ffffff] overflow-y-auto flex justify-center w-[600px]">
+              <div className="h-screen w-full bg-[#ffffff] overflow-y-auto flex justify-center">
                 {children}
               </div>
               {/* TODO: main이랑 footer랑 분리 */}

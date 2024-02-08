@@ -1,8 +1,17 @@
+"use client";
+
 import { Button } from "@/components/Button";
 import Image from "next/image";
 import logo from "../../public/images/logo.png";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
+  const navigateToUpload = () => {
+    router.push("/upload");
+  };
+
   return (
     <main className="relative flex flex-col w-4/5 mt-10">
       <div className="flex flex-col items-center justify-center text-center">
@@ -33,7 +42,10 @@ export default function Home() {
           </p>
         </div>
       </div>
-      <Button className="absolute bottom-10 bg-[#F59E0B] text-white w-full">
+      <Button
+        onClick={navigateToUpload}
+        className="absolute bottom-10 bg-[#F59E0B] text-white w-full"
+      >
         시작하기
       </Button>
     </main>
