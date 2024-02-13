@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Image from "next/image";
 import backgroundImg from "../../public/images/bg_image.png";
 import FooterNav from "@/components/FooterNav";
+import ReactQueryProviders from "@/utils/ReactQueryProvider";
 
 // const inter = Inter({ subsets: ["latin"] });
 
