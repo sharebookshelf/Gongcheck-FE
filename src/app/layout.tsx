@@ -6,6 +6,7 @@ import Image from "next/image";
 import backgroundImg from "../../public/images/bg_image.png";
 import FooterNav from "@/components/FooterNav";
 import ReactQueryProviders from "@/utils/ReactQueryProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -53,6 +54,7 @@ export default function RootLayout({
             </main>
           </div>
         </div>
+        <Toaster />
       </body>
     </html>
   );

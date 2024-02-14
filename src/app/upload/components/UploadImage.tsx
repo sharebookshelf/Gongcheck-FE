@@ -2,7 +2,7 @@
 import { Button } from "@/components/Button";
 import { Image as ImageIcon, XCircleIcon, PlusCircle } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 interface Props {
   onImageUploadComplete: (files: File[]) => void;
@@ -12,6 +12,20 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
   const [preview, setPreview] = useState<
     Array<{ dataUrl: string; file: File } | null>
   >([]);
+  const [files, setFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    // preview에서 file 객체만 추출하여 새로운 files 배열을 생성
+    const updatedFiles = preview
+      .map((item) => item?.file)
+      .filter((file): file is File => !!file);
+
+    // files 상태 업데이트
+    setFiles(updatedFiles);
+
+    // 업데이트된 files 배열을 onImageUploadComplete 콜백을 통해 부모 컴포넌트에 전달
+    onImageUploadComplete(updatedFiles);
+  }, [preview]); // preview 배열이 변경될 때마다 이 로직을 실행
 
   const onUpload = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -59,10 +73,6 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
 
   return (
     <div className="flex flex-col items-center w-4/5 p-8 mt-10 border-2 border-gray-400 border-dotted rounded-xl">
-      {/* <div className="flex flex-row">
-        <ImageIcon size={28} className="mx-4" color="indigo" />
-        <div className="text-center text-gray-600">이미지 업로드</div>
-      </div> */}
       <Button
         onClick={removeAllImage}
         className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium"

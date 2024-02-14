@@ -4,13 +4,20 @@ import UploadImage from "./components/UploadImage";
 import InfoInput from "./components/InfoInput";
 import { FormEventHandler, useState } from "react";
 import { Button } from "@/components/Button";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
 
 interface UserInfo {
   nickname: string;
   birth: string;
   gender: string;
 }
-
+interface Data {
+  nickname: string;
+  birth: string;
+  gender: string;
+}
 export default function Upload() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [userInfo, setUserInfo] = useState<UserInfo>({
@@ -19,18 +26,18 @@ export default function Upload() {
     gender: "",
   });
 
+  const router = useRouter();
+  const { toast } = useToast();
+
   const onImageUploadComplete = (files: File[]) => {
     setUploadedFiles(files);
+    // console.log("변경!!" + uploadedFiles.length);
   };
 
-  const onInputChange = (name: string, value: string) => {
-    if (name) {
-      // name이 있는 경우에만 상태 업데이트
-      setUserInfo((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
+  const onInfoChange = (data: Data) => {
+    setUserInfo({
+      ...data,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -48,15 +55,30 @@ export default function Upload() {
     });
 
     try {
-      const response = await fetch("http://localhost:3001/upload", {
+      const response = await fetch("http://localhost:3000/upload", {
         method: "POST",
         body: formData,
       });
-      if (!response.ok) throw new Error("Network response was not ok.");
-      const data = await response.json();
-      console.log(data); // 처리 결과 로그 출력
+      if (!response.ok) {
+        toast({
+          variant: "destructive",
+          title: "요청에 실패하였습니다.",
+          description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      } else {
+        const data = await response.json();
+        console.log(data); // 처리 결과 로그 출력
+        router.push("/question");
+      }
     } catch (error) {
       console.error("There was a problem with your fetch operation:", error);
+      toast({
+        variant: "destructive",
+        title: "요청에 실패하였습니다.",
+        description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
     }
   };
 
@@ -72,16 +94,7 @@ export default function Upload() {
       <div className="mt-10 text-center text-gray-600">
         추가 정보 입력을 통해 더 정확한 분석을 도와드립니다!
       </div>
-      <InfoInput onInfoChange={onInputChange} />
-      <form className="w-full flex justify-center" onSubmit={handleSubmit}>
-        <Button
-          type="submit"
-          className="mb-10 w-4/5 bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
-        >
-          책장 분석하기 가기
-        </Button>
-      </form>
-
+      <InfoInput onInfoChange={onInfoChange} uploadedFiles={uploadedFiles} />
       <div className="mt-10"></div>
     </main>
   );

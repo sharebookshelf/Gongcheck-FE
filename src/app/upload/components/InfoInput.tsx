@@ -1,99 +1,174 @@
 import { Button } from "@/components/Button";
-import { Input } from "@/app/upload/components/Input";
-import { Label } from "./Label";
-import { RadioGroup, RadioGroupItem } from "@/app/upload/components/RadioGroup";
+import { Input } from "@/components/ui/Input";
+import { Label } from "../../../components/ui/Label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
+import { useForm } from "react-hook-form";
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+  Form,
+} from "@/components/ui/form";
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
-  nickname: z.string().min(1, "닉네임을 입력해주세요."),
-  birth: z
-    .string()
-    .regex(
-      /^\d{4}\/\d{2}\/\d{2}$/,
-      "생년월일 형식이 올바르지 않습니다. YYYYMMDD 형식으로 입력해주세요."
-    ),
+  nickname: z.string().min(2, "닉네임은 2글자 이상이어야 합니다."),
+  birth: z.string().length(8, "생년월일 8자리를 입력해주세요."),
+  // .regex(
+  //   /^\d{4}\/\d{2}\/\d{2}$/,
+  //   "생년월일 형식이 올바르지 않습니다. YYYYMMDD 형식으로 입력해주세요."
+  // ),
+  gender: z.enum(["m", "w"]),
 });
 
 interface Props {
-  onInfoChange: (name: string, value: string) => void;
+  onInfoChange: (data: {
+    nickname: string;
+    birth: string;
+    gender: string;
+  }) => void;
+  uploadedFiles: File[];
+}
+interface Data {
+  nickname: string;
+  birth: string;
+  gender: string;
 }
 
-export default function InfoInput({ onInfoChange }: Props) {
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    onInfoChange(name, value); // 부모 컴포넌트의 상태 업데이트 함수를 호출
+export default function InfoInput({ onInfoChange, uploadedFiles }: Props) {
+  const router = useRouter();
+  const form = useForm<z.infer<typeof userInfoSchema>>({
+    resolver: zodResolver(userInfoSchema),
+    mode: "onChange",
+    defaultValues: {
+      nickname: "",
+      birth: "",
+      gender: "m",
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof userInfoSchema>) => {
+    const formData = new FormData();
+    uploadedFiles.forEach((file) => {
+      formData.append("files", file);
+    });
+    Object.keys(data).forEach((key) => {
+      formData.append(key, data[key as keyof Data]);
+    });
+    console.log(uploadedFiles.length);
+
+    try {
+      const response = await fetch("http://localhost:3000/upload", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) {
+        toast({
+          variant: "destructive",
+          title: "요청에 실패하였습니다.",
+          description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
+          action: <ToastAction altText="Try again">Try again</ToastAction>,
+        });
+      } else {
+        const data = await response.json();
+        console.log(data);
+        router.push("/question");
+      }
+    } catch (error) {
+      console.error("There was a problem with your fetch operation:", error);
+      toast({
+        variant: "destructive",
+        title: "요청에 실패하였습니다.",
+        description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    }
   };
 
-  function handleRadioChange(value: string) {
-    onInfoChange("gender", value);
-  }
-
   return (
-    <div className="flex flex-col w-4/5 mt-10">
-      <form>
-        <div className="mb-4">
-          <label
-            className="block mb-1 text-sm font-medium text-gray-700"
-            htmlFor="nickname"
-          >
-            닉네임
-            <span className="text-red-500">*</span>
-          </label>
-          <Input
-            id="nickname"
+    <div className="flex flex-col w-4/5 mt-10 mb-10">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FormField
+            control={form.control}
             name="nickname"
-            placeholder="닉네임을 입력해주세요"
-            onChange={handleInputChange}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-bold">
+                  닉네임 <span className="text-red-500">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="이름을 입력해주세요." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <div className="mb-4">
-          <label
-            className="block mb-1 text-sm font-medium text-gray-700"
-            htmlFor="birth"
-          >
-            생년월일
-            <span className="text-red-500">*</span>
-          </label>
-          <Input
-            id="birth"
+          <FormField
+            control={form.control}
             name="birth"
-            placeholder="YYYY/MM/DD"
-            onChange={handleInputChange}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-bold">
+                  생년월일 <span className="text-red-500">*</span>
+                </FormLabel>
+                <FormControl>
+                  <Input placeholder="ex) 20001216" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-        <fieldset className="mb-6">
-          <legend className="block mb-1 text-sm font-medium text-gray-700">
-            성별
-            <span className="text-red-500">*</span>
-          </legend>
-          <RadioGroup
-            defaultValue="male"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              handleRadioChange(e.target.value)
-            }
-          >
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="man" value="m" />
-                <Label htmlFor="man">남자</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem id="woman" value="w" />
-                <Label htmlFor="woman">여자</Label>
-              </div>
-            </div>
-          </RadioGroup>
-        </fieldset>
-        {/* <Button
-          type="submit"
-          className="mb-10 w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
-        >
-          책장 분석하기 가기
-        </Button> */}
-      </form>
+          <FormField
+            control={form.control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel className="text-base font-bold">성별</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue="m"
+                    className="flex flex-col space-y-1"
+                  >
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="m" />
+                      </FormControl>
+                      <FormLabel className="text-base">남자</FormLabel>
+                    </FormItem>
+                    <FormItem className="flex items-center space-x-3 space-y-0">
+                      <FormControl>
+                        <RadioGroupItem value="w" />
+                      </FormControl>
+                      <FormLabel className="text-base">여자</FormLabel>
+                    </FormItem>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="w-full flex justify-center">
+            <Button
+              className="w-full mb-10 bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
+              type="submit"
+              disabled={!uploadedFiles || uploadedFiles.length === 0}
+            >
+              등록하기
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }
