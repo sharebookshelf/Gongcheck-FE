@@ -5,6 +5,8 @@ import Header from "@/components/Header";
 import Image from "next/image";
 import backgroundImg from "../../public/images/bg_image.png";
 import FooterNav from "@/components/FooterNav";
+import ReactQueryProviders from "@/utils/ReactQueryProvider";
+import { Toaster } from "@/components/ui/toaster";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -37,13 +39,13 @@ export default function RootLayout({
             style={{ zIndex: -1 }}
           />
           <div
-            className="flex items-center justify-center w-full h-full bg-black bg-opacity-50"
+            className="flex items-center justify-center w-full h-full bg-black bg-opacity-60"
             style={{ zIndex: 1 }}
           >
-            <main className="flex flex-col h-screen rounded-md">
+            <main className="flex flex-col h-screen w-[600px]">
               <Header />
               {/* <div className="border"></div> */}
-              <div className="h-screen bg-[#ffffff] overflow-y-auto flex justify-center w-[600px]">
+              <div className="h-screen w-full bg-[#ffffff] overflow-y-auto flex justify-center">
                 {children}
               </div>
               {/* TODO: main이랑 footer랑 분리 */}
@@ -52,6 +54,7 @@ export default function RootLayout({
             </main>
           </div>
         </div>
+        <Toaster />
       </body>
     </html>
   );
