@@ -1,6 +1,6 @@
 import { Button } from "@/components/Button";
 import { Input } from "@/components/ui/Input";
-import { Label } from "../../../components/ui/Label";
+import { Label } from "../../../components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
