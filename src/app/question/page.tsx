@@ -1,3 +1,8 @@
+"use client";
+
+import useBookStore from "@/store/bookStore";
+
 export default function Question() {
-  return <div>survey 페이지</div>;
+  const books = useBookStore((set) => set.books);
+  return <div>야호</div>;
 }
