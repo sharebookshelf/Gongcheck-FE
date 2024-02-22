@@ -1,6 +1,5 @@
 import { Button } from "@/components/Button";
 import { Input } from "@/components/ui/Input";
-import { Label } from "../../../components/ui/Label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +17,7 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
+import useBookStore from "@/store/bookStore";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
@@ -45,6 +45,8 @@ interface Data {
 }
 
 export default function InfoInput({ onInfoChange, uploadedFiles }: Props) {
+  // const setBooks = useBookStore((set) => set.setBooks);
+
   const router = useRouter();
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
@@ -81,6 +83,7 @@ export default function InfoInput({ onInfoChange, uploadedFiles }: Props) {
       } else {
         const data = await response.json();
         console.log(data);
+        // setBooks(data.books);
         router.push("/question");
       }
     } catch (error) {
