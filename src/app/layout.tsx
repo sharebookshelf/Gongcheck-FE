@@ -30,6 +30,7 @@ export default function RootLayout({
       <body>
         <div className="flex items-center justify-center">
           <Image
+            // className="object-cover"
             src={backgroundImg}
             alt="Background"
             layout="fill"
@@ -45,7 +46,7 @@ export default function RootLayout({
             <main className="flex flex-col h-screen w-[600px]">
               <Header />
               {/* <div className="border"></div> */}
-              <div className="h-screen w-full bg-[#ffffff] overflow-y-auto flex justify-center">
+              <div className="relative h-full w-full bg-[#ffffff] overflow-y-auto flex justify-center">
                 {children}
               </div>
               {/* TODO: main이랑 footer랑 분리 */}

@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 
@@ -21,7 +22,9 @@ export default function Header() {
           onClick={navigateBack}
         />
       )}
-      <h1 className="mx-auto text-xl leading-6 text-orange-400">공유책장</h1>
+      <Link href="/" className="mx-auto text-xl leading-6 text-orange-400">
+        공유책장
+      </Link>
       <div className="opacity-0">
         <ChevronLeft />
       </div>{" "}
