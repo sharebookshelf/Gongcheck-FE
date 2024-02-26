@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/Button";
-import { Image as ImageIcon, XCircleIcon, PlusCircle } from "lucide-react";
+import { XCircleIcon, PlusCircle } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, useEffect, useState } from "react";
 
@@ -12,7 +12,6 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
   const [preview, setPreview] = useState<
     Array<{ dataUrl: string; file: File } | null>
   >([]);
-  const [files, setFiles] = useState<File[]>([]);
 
   useEffect(() => {
     // preview에서 file 객체만 추출하여 새로운 files 배열을 생성
@@ -20,12 +19,9 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
       .map((item) => item?.file)
       .filter((file): file is File => !!file);
 
-    // files 상태 업데이트
-    setFiles(updatedFiles);
-
     // 업데이트된 files 배열을 onImageUploadComplete 콜백을 통해 부모 컴포넌트에 전달
     onImageUploadComplete(updatedFiles);
-  }, [preview]); // preview 배열이 변경될 때마다 이 로직을 실행
+  }, [preview, onImageUploadComplete]); // preview 배열이 변경될 때마다 이 로직을 실행
 
   const onUpload = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
