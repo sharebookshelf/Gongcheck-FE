@@ -1,7 +1,6 @@
 import { Button } from "@/components/Button";
 import { Input } from "@/components/ui/Input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
-import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { z } from "zod";
@@ -17,25 +16,15 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
-import useBookStore from "@/store/bookStore";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
   nickname: z.string().min(2, "닉네임은 2글자 이상이어야 합니다."),
-  birth: z.string().length(8, "생년월일 8자리를 입력해주세요."),
-  // .regex(
-  //   /^\d{4}\/\d{2}\/\d{2}$/,
-  //   "생년월일 형식이 올바르지 않습니다. YYYYMMDD 형식으로 입력해주세요."
-  // ),
+  birth: z.string().min(8, "생년월일 8자리를 입력해주세요."),
   gender: z.enum(["m", "w"]),
 });
 
 interface Props {
-  onInfoChange: (data: {
-    nickname: string;
-    birth: string;
-    gender: string;
-  }) => void;
   uploadedFiles: File[];
 }
 interface Data {
@@ -44,9 +33,7 @@ interface Data {
   gender: string;
 }
 
-export default function InfoInput({ onInfoChange, uploadedFiles }: Props) {
-  // const setBooks = useBookStore((set) => set.setBooks);
-
+export default function InfoInput({ uploadedFiles }: Props) {
   const router = useRouter();
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
@@ -125,7 +112,34 @@ export default function InfoInput({ onInfoChange, uploadedFiles }: Props) {
                   생년월일 <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="ex) 20001216" {...field} />
+                  <Input
+                    placeholder="ex) 19901216"
+                    {...field}
+                    value={field.value}
+                    onChange={(e) => {
+                      const cleanInput = e.target.value.replace(/\D/g, ""); // 숫자가 아닌 문자 제거
+                      let formattedInput;
+
+                      if (cleanInput.length <= 4) {
+                        // 연도 입력 중
+                        formattedInput = cleanInput;
+                      } else if (cleanInput.length <= 6) {
+                        // 월 입력 중
+                        formattedInput = `${cleanInput.slice(
+                          0,
+                          4
+                        )}-${cleanInput.slice(4)}`;
+                      } else {
+                        // 일 입력 중
+                        formattedInput = `${cleanInput.slice(
+                          0,
+                          4
+                        )}-${cleanInput.slice(4, 6)}-${cleanInput.slice(6, 8)}`;
+                      }
+
+                      field.onChange(formattedInput); // 업데이트된 값을 form 필드에 설정
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
