@@ -7,6 +7,7 @@ import backgroundImg from "../../public/images/bg_image.png";
 import FooterNav from "@/components/FooterNav";
 import ReactQueryProviders from "@/utils/ReactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -30,7 +31,6 @@ export default function RootLayout({
       <body>
         <div className="flex items-center justify-center">
           <Image
-            // className="object-cover"
             src={backgroundImg}
             alt="Background"
             layout="fill"
@@ -39,17 +39,14 @@ export default function RootLayout({
             priority
             style={{ zIndex: -1 }}
           />
-          <div
-            className="flex items-center justify-center w-full h-full bg-black bg-opacity-60"
-            style={{ zIndex: 1 }}
-          >
-            <main className="flex flex-col h-screen w-[600px]">
+          <div className="flex items-center justify-center w-full h-full bg-black bg-opacity-60">
+            <main className="flex flex-col h-screen w-[450px]">
               <Header />
-              {/* <div className="border"></div> */}
-              <div className="relative h-full w-full bg-[#ffffff] overflow-y-auto flex justify-center">
-                {children}
-              </div>
-              {/* TODO: main이랑 footer랑 분리 */}
+              <ReactQueryProviders>
+                <div className="relative h-full w-full bg-[#ffffff] overflow-y-auto flex justify-center">
+                  {children}
+                </div>
+              </ReactQueryProviders>
               <div className="border"></div>
               <FooterNav />
             </main>

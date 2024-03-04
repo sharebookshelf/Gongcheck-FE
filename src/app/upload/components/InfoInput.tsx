@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/ui/Input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
@@ -16,6 +17,8 @@ import {
 import { toast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import useSuccessStore from "@/store/successStore";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
@@ -34,7 +37,42 @@ interface Data {
 }
 
 export default function InfoInput({ uploadedFiles }: Props) {
+  // const queryClient = new QueryClient();
+  // await queryClient.prefetchQuery(queryKey: ["book", queryFn: getBook])
   const router = useRouter();
+  const setIsSuccess = useSuccessStore((state) => state.setIsSuccess);
+
+  const mutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      router.push("/question");
+      await new Promise((resolve) => {
+        // 10초 후에 resolve 함수를 호출하여 Promise가 완료되었음을 알림
+        setTimeout(() => {
+          console.log("데이터 처리 완료");
+          resolve("데이터 준비 완료");
+        }, 10000); // 10초 대기
+      });
+      return fetch("http://localhost:3000/upload", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+    },
+    onSuccess(response, variable) {
+      // setBooks(data.books);
+      // router.push("/question");
+      setIsSuccess(true);
+    },
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "요청에 실패하였습니다.",
+        description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      });
+    },
+  });
+
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
     mode: "onChange",
@@ -44,6 +82,44 @@ export default function InfoInput({ uploadedFiles }: Props) {
       gender: "m",
     },
   });
+  //   const formData = new FormData();
+  //   uploadedFiles.forEach((file) => {
+  //     formData.append("files", file);
+  //   });
+  //   Object.keys(data).forEach((key) => {
+  //     formData.append(key, data[key as keyof Data]);
+  //   });
+  //   console.log(uploadedFiles.length);
+
+  //   try {
+  //     const response = await fetch("http://localhost:3000/upload", {
+  //       method: "POST",
+  //       credentials: "include",
+  //       body: formData,
+  //     });
+  //     if (!response.ok) {
+  //       toast({
+  //         variant: "destructive",
+  //         title: "요청에 실패하였습니다.",
+  //         description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
+  //         action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //       });
+  //     } else {
+  //       const data = await response.json();
+  //       console.log(data);
+  //       // setBooks(data.books);
+  //       router.push("/question");
+  //     }
+  //   } catch (error) {
+  //     console.error("There was a problem with your fetch operation:", error);
+  //     toast({
+  //       variant: "destructive",
+  //       title: "요청에 실패하였습니다.",
+  //       description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
+  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
+  //     });
+  //   }
+  // };
 
   const onSubmit = async (data: z.infer<typeof userInfoSchema>) => {
     const formData = new FormData();
@@ -55,34 +131,12 @@ export default function InfoInput({ uploadedFiles }: Props) {
     });
     console.log(uploadedFiles.length);
 
-    try {
-      const response = await fetch("http://localhost:3000/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
-        toast({
-          variant: "destructive",
-          title: "요청에 실패하였습니다.",
-          description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
-          action: <ToastAction altText="Try again">Try again</ToastAction>,
-        });
-      } else {
-        const data = await response.json();
-        console.log(data);
-        // setBooks(data.books);
-        router.push("/question");
-      }
-    } catch (error) {
-      console.error("There was a problem with your fetch operation:", error);
-      toast({
-        variant: "destructive",
-        title: "요청에 실패하였습니다.",
-        description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-    }
+    mutation.mutate(formData);
   };
+
+  if (mutation.isPending) {
+    <div>loading</div>;
+  }
 
   return (
     <div className="flex flex-col w-4/5 mt-10 mb-10">
