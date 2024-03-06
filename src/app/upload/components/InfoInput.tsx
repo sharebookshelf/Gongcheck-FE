@@ -1,5 +1,4 @@
 "use client";
-import { Button } from "@/components/Button";
 import { Input } from "@/components/ui/Input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +19,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import useSuccessStore from "@/store/successStore";
 import useSurveyStore from "@/store/surveyStore";
+import { Button } from "@/components/ui/button";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
@@ -63,6 +63,7 @@ export default function InfoInput({ uploadedFiles }: Props) {
     onSuccess(response, variable) {
       // setBooks(data.books);
       // router.push("/question");
+      // localStorage.setItem("readingType", data.readingType);
       setIsSuccess(true);
       // console.log(question);
     },
