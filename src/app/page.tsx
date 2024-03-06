@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import logo from "../../public/images/logo.png";
 import { useRouter } from "next/navigation";
@@ -23,8 +23,8 @@ export default function Home() {
           quality={100}
           priority
         />
-        <h1 className="mb-20 text-lg text-orange-500">공유책장</h1>
-        <div className="absolute items-center justify-center h-32 top-1/3">
+        <h1 className="mb-10 text-lg text-orange-500">공유책장</h1>
+        <div className="items-center justify-center h-32">
           <p className="mb-5 text-2xl">
             내{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-red-500 to-orange-500">
@@ -44,7 +44,7 @@ export default function Home() {
       </div>
       <Button
         onClick={navigateToUpload}
-        className="absolute bottom-10 bg-[#F59E0B] text-white w-full"
+        className="mt-10 bg-[#F59E0B] text-white w-full"
       >
         시작하기
       </Button>

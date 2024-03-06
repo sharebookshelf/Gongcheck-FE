@@ -5,6 +5,7 @@ import Image from "next/image";
 import useBookStore from "../../store/bookStore";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Cookies } from "react-cookie";
 
 export default function Rank() {
   const router = useRouter();
@@ -26,7 +27,7 @@ export default function Rank() {
         return prevSelectedBookIds.filter((id) => id !== bookId);
       } else {
         // 3개 이상 선택하지 못하도록 제한
-        if (prevSelectedBookIds.length >= 3) {
+        if (prevSelectedBookIds.length >= 5) {
           return prevSelectedBookIds;
         }
         // 새로운 선택 추가
@@ -45,6 +46,10 @@ export default function Rank() {
         return "bg-blue-200"; // 두 번째 선택
       case 2:
         return "bg-red-200"; // 세 번째 선택
+      case 3:
+        return "bg-orange-200"; // 세 번째 선택
+      case 4:
+        return "bg-gray-200"; // 세 번째 선택
       default:
         return "bg-transparent"; // 선택되지 않음
     }
@@ -66,8 +71,9 @@ export default function Rank() {
         };
       });
 
-      const response = await fetch("http://localhost:3000/book/1", {
+      const response = await fetch("http://localhost:3000/book", {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
@@ -79,7 +85,7 @@ export default function Rank() {
       }
 
       // 요청 성공 시, 결과 페이지로 라우팅
-      router.push("/question");
+      router.push("/result");
     } catch (error) {
       console.error("요청 실패:", error);
       alert("순위 업데이트에 실패했습니다. 다시 시도해주세요.");
@@ -90,25 +96,22 @@ export default function Rank() {
     <main className="flex flex-col items-center w-full h-full pb-10 my-5">
       <h1 className="text-3xl">책장 분석이 완료되었습니다!</h1>
       <div className="mt-2 mb-2 font-light text-gray-500 text-l">
-        좋아하는 순서로 순위를 매겨주세요!
+        좋아하는 순서로 순위를 매겨주세요!(최대 5권)
       </div>
-      <ul className="pl-5 my-2 list-disc">
-        <li>
-          <span className="text-green-600">1순위: 초록</span>
-        </li>
-        <li>
-          <span className="text-blue-600">2순위: 파랑</span>
-        </li>
-        <li>
-          <span className="text-red-600">3순위: 빨강</span>
-        </li>
-      </ul>
-      <div className="w-2/3 p-4 space-y-4 overflow-y-auto border rounded-lg shadow-2xl h-3/4 mb-30 border-slate-300">
+      {/* <div>
+        <span className="text-green-600">1순위: 초록</span>
+
+        <span className="text-blue-600">2순위: 파랑</span>
+
+        <span className="text-red-600">3순위: 빨강</span>
+      </div> */}
+
+      <div className="w-4/5 p-4 space-y-4 overflow-y-auto border rounded-lg shadow-2xl h-3/4 mb-30 border-slate-300">
         {filteredBooks &&
           filteredBooks.map((item) => (
             <div
               key={item.bookId}
-              className={`flex flex-col justify-center rounded-lg p-2 ${getBackgroundColor(
+              className={`flex flex-row justify-between items-center rounded-lg p-2 ${getBackgroundColor(
                 item.bookId
               )}`}
               onClick={() => toggleBookSelection(item.bookId)}
@@ -133,6 +136,13 @@ export default function Rank() {
                   <div className="text-xs text-gray-500">{item.publisher}</div>
                   <div className="text-xs text-gray-500">{item.author}</div>
                 </div>
+              </div>
+              <div className="w-1/5">
+                {selectedBookIds.includes(item.bookId) && (
+                  <div className="text-xl font-bold text-end">
+                    {selectedBookIds.indexOf(item.bookId) + 1}
+                  </div>
+                )}
               </div>
             </div>
           ))}
