@@ -19,6 +19,7 @@ import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import useSuccessStore from "@/store/successStore";
+import useSurveyStore from "@/store/surveyStore";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
@@ -41,16 +42,17 @@ export default function InfoInput({ uploadedFiles }: Props) {
   // await queryClient.prefetchQuery(queryKey: ["book", queryFn: getBook])
   const router = useRouter();
   const setIsSuccess = useSuccessStore((state) => state.setIsSuccess);
+  const question = useSurveyStore((state) => state.question);
 
   const mutation = useMutation({
     mutationFn: async (formData: FormData) => {
-      router.push("/question");
+      router.push("/survey");
       await new Promise((resolve) => {
         // 10초 후에 resolve 함수를 호출하여 Promise가 완료되었음을 알림
         setTimeout(() => {
           console.log("데이터 처리 완료");
           resolve("데이터 준비 완료");
-        }, 10000); // 10초 대기
+        }, 3000); // 3초 대기
       });
       return fetch("http://localhost:3000/upload", {
         method: "POST",
@@ -62,6 +64,7 @@ export default function InfoInput({ uploadedFiles }: Props) {
       // setBooks(data.books);
       // router.push("/question");
       setIsSuccess(true);
+      // console.log(question);
     },
     onError() {
       toast({
