@@ -15,3 +15,7 @@ export interface Book {
   status?: string | null;
   rank?: number;
 }
+
+export interface SurveyPageProps {
+  setQuestionPageNumber: (pageNumber: number) => void;
+}
