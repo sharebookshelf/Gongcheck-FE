@@ -10,8 +10,8 @@ export default function AgreeButton() {
     // 여기서 isAgree는 boolean 값이며, true면 공감, false면 비공감입니다.
     const userConfirmed = window.confirm(
       isAgree
-        ? "공감해요를 선택하셨습니다. 이 선택을 서버에 전송하시겠습니까?"
-        : "아니에요를 선택하셨습니다. 이 선택을 서버에 전송하시겠습니까?"
+        ? "분석 결과에 공감하시나요? (다시 선택 불가)"
+        : "분석 결과에 공감하지 않으시나요? (다시 선택 불가)"
     );
 
     if (userConfirmed) {
@@ -21,10 +21,6 @@ export default function AgreeButton() {
           {
             credentials: "include",
             method: "PATCH",
-            // headers: {
-            //   "Content-Type": "application/json",
-            // },
-            // body: JSON.stringify({ isAgree }),
           }
         );
 
@@ -40,10 +36,6 @@ export default function AgreeButton() {
       }
     }
   };
-
-  // useEffect(() => {
-  //   console.log(isAgree);
-  // }, [isAgree]);
 
   return (
     <div className="max-w-md mx-auto my-8">
