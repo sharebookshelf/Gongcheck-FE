@@ -5,6 +5,7 @@ import {
   FormControl,
   FormField,
   FormItem,
+  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -52,12 +53,12 @@ export default function Categorize() {
   }
 
   return (
-    <main className="flex flex-col items-center w-full h-full pb-10 my-5 overflow-hidden">
+    <main className="flex flex-col items-center w-4/5 h-auto pb-10 my-5 overflow-hidden">
       <h1 className="text-3xl">책장 분석이 완료되었습니다!</h1>
       <div className="my-10 text-2xl font-light">
         읽은 책에 표시를 해주세요!
       </div>
-      <div className="w-2/3 p-4 overflow-y-auto border rounded-lg shadow-2xl h-4/5 mb-30 border-slate-300 ">
+      <div className="w-full p-4 overflow-y-auto border rounded-lg shadow-2xl h-4/5 mb-30 border-slate-300 ">
         <Form {...form}>
           <form
             id="category"
@@ -79,58 +80,47 @@ export default function Categorize() {
                           return (
                             <FormItem
                               key={item.bookId}
-                              className="flex flex-row items-start space-x-3 space-y-0"
+                              className="flex flex-row items-center space-x-3 space-y-0"
                             >
                               <FormControl>
-                                <div className="flex flex-row items-center justify-center">
-                                  <Checkbox
-                                    className="mr-4"
-                                    checked={field.value?.includes(item.bookId)}
-                                    onCheckedChange={(checked) => {
-                                      return checked
-                                        ? field.onChange([
-                                            ...field.value,
-                                            item.bookId,
-                                          ])
-                                        : field.onChange(
-                                            field.value?.filter(
-                                              (value) => value !== item.bookId
-                                            )
-                                          );
-                                    }}
+                                <Checkbox
+                                  checked={field.value?.includes(item.bookId)}
+                                  onCheckedChange={(checked) => {
+                                    return checked
+                                      ? field.onChange([
+                                          ...field.value,
+                                          item.bookId,
+                                        ])
+                                      : field.onChange(
+                                          field.value?.filter(
+                                            (value) => value !== item.bookId
+                                          )
+                                        );
+                                  }}
+                                />
+                              </FormControl>
+                              <FormLabel className="text-sm font-normal">
+                                <div className="flex flex-row items-center justify-center space-y-2 space-x-2">
+                                  <Image
+                                    alt="Book cover"
+                                    className="object-cover w-10 h-15 flex-shrink-0 aspect-[40/60]"
+                                    height="60"
+                                    src={item.titleUrl || "/images/logo.png"}
+                                    width="40"
                                   />
-                                  <div>
-                                    <div className="flex items-center mb-2">
-                                      <div className="flex-shrink-0">
-                                        <Image
-                                          alt="Book cover"
-                                          className="object-cover w-10 h-15"
-                                          height="60"
-                                          src={
-                                            item.titleUrl || "/images/logo.png"
-                                          }
-                                          style={{
-                                            aspectRatio: "40/60",
-                                            objectFit: "cover",
-                                          }}
-                                          width="40"
-                                        />
-                                      </div>
-                                      <div className="flex flex-col justify-center ml-3">
-                                        <div className="text-sm font-light">
-                                          {item.title}
-                                        </div>
-                                        <div className="text-xs text-gray-500">
-                                          {item.publisher}
-                                        </div>
-                                        <div className="text-xs text-gray-500">
-                                          {item.author}
-                                        </div>
-                                      </div>
+                                  <div className="flex flex-col justify-center space-y-1">
+                                    <div className="text-sm font-light">
+                                      {item.title}
+                                    </div>
+                                    <div className="text-xs text-gray-500">
+                                      {item.publisher}
+                                    </div>
+                                    <div className="text-xs text-gray-500">
+                                      {item.author}
                                     </div>
                                   </div>
                                 </div>
-                              </FormControl>
+                              </FormLabel>
                             </FormItem>
                           );
                         }}
@@ -146,7 +136,7 @@ export default function Categorize() {
       <Button
         form="category"
         type="submit"
-        className="bg-[#F59E0B] text-white w-2/3 mt-10"
+        className="bg-[#F59E0B] text-white w-full mt-10"
       >
         다음
       </Button>

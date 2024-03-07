@@ -40,7 +40,7 @@ export default function SurveyPage({ setQuestionPageNumber }: SurveyPageProps) {
           <p className="mb-8 text-lg text-center">
             책과 관련하여 어떤 고민을 갖고 계신가요?
           </p>
-          <div className="w-full max-w-md mb-8 space-y-4">
+          <div className="w-full mb-8 space-y-4">
             <motion.button
               onClick={() => handleQuestionClick(1)}
               className="w-full py-4 text-black bg-white rounded-lg shadow"

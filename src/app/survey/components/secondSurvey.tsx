@@ -32,14 +32,14 @@ export default function SurveyPage({ setQuestionPageNumber }: SurveyPageProps) {
       <div className="relative flex flex-col h-full text-white bg-[url('/images/surveyImage2.png')] bg-center">
         <div className="absolute w-full h-full bg-black bg-opacity-50"></div>
         <div
-          className="flex flex-col items-center justify-center p-4"
+          className="flex flex-col items-center justify-center flex-1 p-4"
           style={{ zIndex: 2 }}
         >
           <h2 className="mb-8 text-2xl font-bold">2/3 Step</h2>
           <p className="mb-8 text-lg text-center">
             읽을 책을 보통 어디서 찾으시나요?
           </p>
-          <div className="w-[448px] mb-8 space-y-4">
+          <div className="w-full mb-8 space-y-4">
             <motion.button
               onClick={() => handleQuestionClick(1)}
               className="w-full py-4 text-black bg-white rounded-lg shadow"

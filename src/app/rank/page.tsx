@@ -93,7 +93,7 @@ export default function Rank() {
   }
 
   return (
-    <main className="flex flex-col items-center w-full h-full pb-10 my-5">
+    <main className="flex flex-col items-center w-full h-full pb-10">
       <h1 className="text-3xl">책장 분석이 완료되었습니다!</h1>
       <div className="mt-2 mb-2 font-light text-gray-500 text-l">
         좋아하는 순서로 순위를 매겨주세요!(최대 5권)
@@ -149,11 +149,10 @@ export default function Rank() {
       </div>
       <Button
         onClick={handleSubmitButton}
-        className="bg-[#F59E0B] text-white w-2/3 mt-10"
+        className="bg-[#F59E0B] text-white w-4/5 mt-10"
       >
         분석하기
       </Button>
-      {/* <div className="mb-10">sdf</div> */}
     </main>
   );
 }
