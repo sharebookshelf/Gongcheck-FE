@@ -8,6 +8,9 @@ import FooterNav from "@/components/FooterNav";
 import ReactQueryProviders from "@/utils/ReactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClientProvider } from "@tanstack/react-query";
+import Script from "next/script";
+import { useEffect } from "react";
+import KakaoScript from "./result/components/KakaoScript";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -21,6 +24,12 @@ const notoSansKr = Noto_Sans_KR({
   subsets: ["latin"],
 });
 
+declare global {
+  interface Window {
+    Kakao: any;
+  }
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center min-w-[450px]">
           <Image
             src={backgroundImg}
             alt="Background"
@@ -43,7 +52,7 @@ export default function RootLayout({
             <main className="flex flex-col h-screen w-[450px]">
               <Header />
               <ReactQueryProviders>
-                <div className="relative h-full w-full bg-[#ffffff] overflow-y-auto flex justify-center">
+                <div className="flex h-full w-full bg-[#ffffff] overflow-y-auto justify-center">
                   {children}
                 </div>
               </ReactQueryProviders>
@@ -54,6 +63,7 @@ export default function RootLayout({
         </div>
         <Toaster />
       </body>
+      <KakaoScript />
     </html>
   );
 }

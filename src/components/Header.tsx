@@ -14,20 +14,17 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-[#ffffff] flex items-center justify-between p-5">
+    <header className="bg-[#ffffff] flex items-center justify-start p-5 relative">
       {pathname !== "/" && (
         <ChevronLeft
           size={28}
-          className="cursor-pointer rounded-full hover:bg-gray-200"
+          className="absolute rounded-full cursor-pointer left-4 hover:bg-gray-200"
           onClick={navigateBack}
         />
       )}
       <Link href="/" className="mx-auto text-xl leading-6 text-orange-400">
         공유책장
       </Link>
-      <div className="opacity-0">
-        <ChevronLeft />
-      </div>{" "}
     </header>
   );
 }

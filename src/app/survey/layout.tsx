@@ -4,7 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import useSuccessStore from "@/store/successStore";
 import useSurveyStore, { Question } from "@/store/surveyStore";
 import { useRouter } from "next/navigation";
-import { CloudCog } from "lucide-react";
+import { SyncLoader } from "react-spinners";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const isSuccess = useSuccessStore((state) => state.isSuccess);
@@ -22,42 +22,36 @@ export default function Template({ children }: { children: React.ReactNode }) {
         method: "POST",
         credentials: "include",
         body: JSON.stringify(surveyData),
-        // body: "sdf",
       });
     },
     onSuccess: () => {
-      router.push("/dummyResult");
+      router.push("/categorize");
     },
     onError: (error) => {
-      console.log("sdf");
       console.log(error);
     },
   });
-
-  // const sendSurveyData = () => {
-  //   router.push("/dummyResult");
-  //   console.log(question);
-  // };
 
   const handleSubmit = () => {
     sendSurveyData.mutate(question);
   };
 
   return (
-    <div>
+    <div className="w-full">
       {children}
       <button
-        // onClick={() => {
-        //   sendSurveyData.mutate(question);
-        // }}
         onClick={handleSubmit}
-        className={`w-full py-4 text-black my-4 rounded-lg shadow ${
-          isSuccess ? "bg-[#FFA500]" : "bg-gray-400"
+        className={`relative flex flex-row justify-start items-center w-full py-4 text-black my-4 rounded-lg shadow ${
+          isSuccess && question.question3 ? "bg-[#FFA500]" : "bg-gray-400"
         }`}
-        // "w-full py-4 text-black my-4 rounded-lg shadow {{ isSuccess ? 'bg-[#FFA500]' : 'bg-gray-400' }}"
-        disabled={!isSuccess}
+        disabled={!isSuccess || !question.question3}
       >
-        {isSuccess ? "분석 결과 확인" : "책장 분석 중 ..."}
+        <div className="mx-auto">
+          {isSuccess ? "분석 결과 확인" : "책장 분석 중 ..."}
+        </div>
+        <div className="absolute right-6">
+          {isSuccess ? null : <SyncLoader color="#6E6E6E" />}
+        </div>
       </button>
     </div>
   );

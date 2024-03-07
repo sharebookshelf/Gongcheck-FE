@@ -31,14 +31,14 @@ export default function SurveyPage({ setQuestionPageNumber }: SurveyPageProps) {
       <div className="relative flex flex-col h-full text-white bg-[url('/images/surveyImage3.png')] bg-center">
         <div className="absolute w-full h-full bg-black bg-opacity-50"></div>
         <div
-          className="flex flex-col items-center justify-center p-4"
+          className="flex flex-col items-center justify-center flex-1 p-4"
           style={{ zIndex: 2 }}
         >
           <h2 className="mb-8 text-2xl font-bold">3/3 Step</h2>
           <p className="mb-8 text-lg text-center">
             다음 중 저희 서비스 중에서 가장 끌리는 것은 무엇인가요?
           </p>
-          <div className="w-[448px] mb-8 space-y-4">
+          <div className="w-full mb-8 space-y-4">
             <motion.button
               onClick={() => handleQuestionClick(1)}
               className="w-full py-4 text-black bg-white rounded-lg shadow"
