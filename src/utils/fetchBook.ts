@@ -14,7 +14,7 @@ export async function fetchBook() {
   // }
 
   try {
-    const response = await fetch(`http://localhost:3000/book`);
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/book`);
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }

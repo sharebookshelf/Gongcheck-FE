@@ -13,14 +13,18 @@ export default function Home() {
   };
 
   return (
-    <main className="relative flex flex-col w-4/5 mt-10">
-      <div className="flex flex-col items-center justify-center text-center">
+    <main className="flex flex-col w-4/5 h-full p-4 justify-between">
+      <div className="flex flex-col items-center justify-center text-center p-4">
         <Image
           src={logo}
           alt="Background"
-          width={150}
-          height={150}
+          // width={150}
+          // height={150}
           quality={100}
+          style={{
+            width: "150px",
+            height: "auto",
+          }}
           priority
         />
         <h1 className="mb-10 text-lg text-orange-500">공유책장</h1>

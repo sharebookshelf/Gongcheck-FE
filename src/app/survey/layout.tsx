@@ -15,7 +15,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const sendSurveyData = useMutation({
     mutationFn: async (surveyData: Question) => {
       console.log(JSON.stringify(surveyData));
-      return fetch("http://localhost:3000/survey", {
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/survey`, {
         headers: {
           "Content-Type": "application/json",
         },
