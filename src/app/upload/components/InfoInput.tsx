@@ -20,6 +20,9 @@ import { useMutation } from "@tanstack/react-query";
 import useSuccessStore from "@/store/successStore";
 import useSurveyStore from "@/store/surveyStore";
 import { Button } from "@/components/ui/button";
+import { useUploadMutation } from "../hooks/useUploadMutation";
+import { transformDate } from "@/lib/utils";
+import Loading from "@/app/components/loading";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
@@ -38,44 +41,7 @@ interface Data {
 }
 
 export default function InfoInput({ uploadedFiles }: Props) {
-  // const queryClient = new QueryClient();
-  // await queryClient.prefetchQuery(queryKey: ["book", queryFn: getBook])
-  const router = useRouter();
-  const setIsSuccess = useSuccessStore((state) => state.setIsSuccess);
-  const question = useSurveyStore((state) => state.question);
-
-  const mutation = useMutation({
-    mutationFn: async (formData: FormData) => {
-      router.push("/survey");
-      await new Promise((resolve) => {
-        // 10초 후에 resolve 함수를 호출하여 Promise가 완료되었음을 알림
-        setTimeout(() => {
-          console.log("데이터 처리 완료");
-          resolve("데이터 준비 완료");
-        }, 3000); // 3초 대기
-      });
-      return fetch("http://localhost:3000/upload", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
-    },
-    onSuccess(response, variable) {
-      // setBooks(data.books);
-      // router.push("/question");
-      // localStorage.setItem("readingType", data.readingType);
-      setIsSuccess(true);
-      // console.log(question);
-    },
-    onError() {
-      toast({
-        variant: "destructive",
-        title: "요청에 실패하였습니다.",
-        description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
-        action: <ToastAction altText="Try again">Try again</ToastAction>,
-      });
-    },
-  });
+  const { mutate, isPending } = useUploadMutation();
 
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
@@ -86,44 +52,6 @@ export default function InfoInput({ uploadedFiles }: Props) {
       gender: "m",
     },
   });
-  //   const formData = new FormData();
-  //   uploadedFiles.forEach((file) => {
-  //     formData.append("files", file);
-  //   });
-  //   Object.keys(data).forEach((key) => {
-  //     formData.append(key, data[key as keyof Data]);
-  //   });
-  //   console.log(uploadedFiles.length);
-
-  //   try {
-  //     const response = await fetch("http://localhost:3000/upload", {
-  //       method: "POST",
-  //       credentials: "include",
-  //       body: formData,
-  //     });
-  //     if (!response.ok) {
-  //       toast({
-  //         variant: "destructive",
-  //         title: "요청에 실패하였습니다.",
-  //         description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
-  //         action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //       });
-  //     } else {
-  //       const data = await response.json();
-  //       console.log(data);
-  //       // setBooks(data.books);
-  //       router.push("/question");
-  //     }
-  //   } catch (error) {
-  //     console.error("There was a problem with your fetch operation:", error);
-  //     toast({
-  //       variant: "destructive",
-  //       title: "요청에 실패하였습니다.",
-  //       description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
-  //       action: <ToastAction altText="Try again">Try again</ToastAction>,
-  //     });
-  //   }
-  // };
 
   const onSubmit = async (data: z.infer<typeof userInfoSchema>) => {
     const formData = new FormData();
@@ -133,13 +61,13 @@ export default function InfoInput({ uploadedFiles }: Props) {
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key as keyof Data]);
     });
-    console.log(uploadedFiles.length);
+    // console.log(uploadedFiles.length);
 
-    mutation.mutate(formData);
+    mutate(formData);
   };
 
-  if (mutation.isPending) {
-    <div>loading</div>;
+  if (isPending) {
+    return <Loading />;
   }
 
   return (
@@ -176,25 +104,7 @@ export default function InfoInput({ uploadedFiles }: Props) {
                     value={field.value}
                     onChange={(e) => {
                       const cleanInput = e.target.value.replace(/\D/g, ""); // 숫자가 아닌 문자 제거
-                      let formattedInput;
-
-                      if (cleanInput.length <= 4) {
-                        // 연도 입력 중
-                        formattedInput = cleanInput;
-                      } else if (cleanInput.length <= 6) {
-                        // 월 입력 중
-                        formattedInput = `${cleanInput.slice(
-                          0,
-                          4
-                        )}-${cleanInput.slice(4)}`;
-                      } else {
-                        // 일 입력 중
-                        formattedInput = `${cleanInput.slice(
-                          0,
-                          4
-                        )}-${cleanInput.slice(4, 6)}-${cleanInput.slice(6, 8)}`;
-                      }
-
+                      const formattedInput = transformDate(cleanInput);
                       field.onChange(formattedInput); // 업데이트된 값을 form 필드에 설정
                     }}
                   />

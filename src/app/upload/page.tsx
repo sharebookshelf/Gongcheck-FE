@@ -4,16 +4,6 @@ import UploadImage from "./components/UploadImage";
 import InfoInput from "./components/InfoInput";
 import { useCallback, useState } from "react";
 
-interface UserInfo {
-  nickname: string;
-  birth: string;
-  gender: string;
-}
-interface Data {
-  nickname: string;
-  birth: string;
-  gender: string;
-}
 export default function Upload() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
 

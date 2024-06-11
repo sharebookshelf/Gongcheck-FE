@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Inter, Noto_Sans_KR } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
+import Header from "@/app/components/Header";
 import Image from "next/image";
 import backgroundImg from "../../public/images/bg_image.png";
-import FooterNav from "@/components/FooterNav";
+import FooterNav from "@/app/components/FooterNav";
 import ReactQueryProviders from "@/utils/ReactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -38,15 +38,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="flex items-center justify-center min-w-[450px]">
+        <div className="flex items-center justify-center min-w-[450px] relative">
           <Image
             src={backgroundImg}
             alt="Background"
-            layout="fill"
-            objectFit="cover"
+            fill
             quality={100}
             priority
-            style={{ zIndex: -1 }}
+            style={{
+              zIndex: -1,
+              objectFit: "cover",
+            }}
           />
           <div className="flex items-center justify-center w-full h-full bg-black bg-opacity-60">
             <main className="flex flex-col h-screen w-[450px]">

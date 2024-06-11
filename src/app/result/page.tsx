@@ -1,4 +1,5 @@
 "use client";
+
 import { getResultByUserId, useResult } from "@/hooks/useResult";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
@@ -7,6 +8,7 @@ import Image from "next/image";
 import AgreeButton from "./components/AgreeButton";
 import { Button } from "@/components/ui/button";
 import { Cookies } from "react-cookie";
+import Loading from "../components/loading";
 
 export default function Page() {
   const { status, data, error, isFetching } = useResult();
@@ -37,16 +39,16 @@ export default function Page() {
   }, [readingType]);
 
   if (!data) {
-    <div>loading</div>;
+    return <Loading />;
   }
 
   return (
-    <div className="flex flex-col items-center w-3/4 mb-10">
-      <h1 className="w-full mb-10 text-3xl font-light text-center">
+    <div className="flex flex-col items-center w-full h-full p-4 space-y-4 overflow-y-auto">
+      <h1 className="w-full text-3xl font-light text-center">
         당신의 독서 유형은...
       </h1>
       {data && (
-        <div className="flex flex-col items-center w-full space-y-10">
+        <div className="flex flex-col items-center w-full h-full p-4 space-y-10 border overflow-y-auto">
           <h2 className="text-2xl">{typeInfo?.type}</h2>
           <Image
             className="rounded-md"
@@ -55,17 +57,14 @@ export default function Page() {
             src={typeInfo?.image as string}
             alt={typeInfo?.type as string}
           />
-          <p>{typeInfo?.analysis}</p>
-          <p>{typeInfo?.feature}</p>
-          <p>{typeInfo?.readingMethod}</p>
-          <p></p>
+          <div>{typeInfo?.analysis}</div>
+          <div>{typeInfo?.feature}</div>
+          <div>{typeInfo?.readingMethod}</div>
         </div>
       )}
       <AgreeButton />
-      <div className="mb-4 text-center">
-        <span className="text-lg font-medium text-[#333333]">
-          결과가 마음에 드시나요? 인상 깊다면?
-        </span>
+      <div className="mb-4 text-center text-lg font-medium text-[#333333]">
+        결과가 마음에 드시나요? 인상 깊다면?
       </div>
       <Button
         onClick={onClick}
