@@ -14,7 +14,7 @@ export default function Header() {
   };
 
   return (
-    <header className="bg-[#ffffff] flex items-center justify-start p-5 relative">
+    <header className="bg-[#ffffff] flex sticky top-0 items-center justify-start p-5">
       {pathname !== "/" && (
         <ChevronLeft
           size={28}

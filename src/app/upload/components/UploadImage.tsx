@@ -68,7 +68,7 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
   };
 
   return (
-    <div className="flex flex-col items-center w-4/5 p-8 mt-10 border-2 border-gray-400 border-dotted rounded-xl">
+    <div className="flex flex-col items-center w-full p-2 mt-10 border-2 border-gray-400 border-dotted rounded-xl">
       <Button
         onClick={removeAllImage}
         className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium"

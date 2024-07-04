@@ -13,13 +13,11 @@ export default function Home() {
   };
 
   return (
-    <main className="flex flex-col w-4/5 h-full p-4 justify-between">
-      <div className="flex flex-col items-center justify-center text-center p-4">
+    <main className="flex flex-col justify-between w-4/5 h-full p-4">
+      <div className="flex flex-col items-center justify-center p-4 text-center">
         <Image
           src={logo}
           alt="Background"
-          // width={150}
-          // height={150}
           quality={100}
           style={{
             width: "150px",
@@ -40,7 +38,7 @@ export default function Home() {
           <p className="text-2xl">
             내{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-red-500 to-orange-500">
-              독서 성향
+              책장
             </span>
             을 분석해드립니다.
           </p>
