@@ -1,12 +1,11 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import FirstSurveyPage from "./components/firstSurvey";
-import SecondSurveyPage from "./components/secondSurvey";
-import ThirdSurveyPage from "./components/thirdSurvey";
 
-import { useEffect, useState } from "react";
-import useSurveyStore from "@/store/surveyStore";
+import { useState } from "react";
+import SecondSurvey from "./components/SecondSurvey";
+import FirstSurvey from "./components/FirstSurvey";
+import ThirdSurvey from "./components/ThirdSurvey";
 
 const variants = {
   enter: (direction: number) => {
@@ -30,15 +29,9 @@ const variants = {
 
 export default function SurveyMainPage() {
   const [questionPageNumber, setQustionPageNumber] = useState(1);
-  // console.log(questionPageNumber);
-  const question = useSurveyStore((state) => state.question);
-
-  // useEffect(() => {
-  //   console.log(question);
-  // }, [question]);
 
   return (
-    <div>
+    <div className="flex flex-col w-full h-full">
       <AnimatePresence>
         <motion.div
           variants={variants}
@@ -48,17 +41,16 @@ export default function SurveyMainPage() {
           transition={{ type: "spring" }}
         >
           {questionPageNumber === 1 && (
-            <FirstSurveyPage setQuestionPageNumber={setQustionPageNumber} />
+            <FirstSurvey setQuestionPageNumber={setQustionPageNumber} />
           )}
           {questionPageNumber === 2 && (
-            <SecondSurveyPage setQuestionPageNumber={setQustionPageNumber} />
+            <SecondSurvey setQuestionPageNumber={setQustionPageNumber} />
           )}
           {questionPageNumber === 3 && (
-            <ThirdSurveyPage setQuestionPageNumber={setQustionPageNumber} />
+            <ThirdSurvey setQuestionPageNumber={setQustionPageNumber} />
           )}
         </motion.div>
       </AnimatePresence>
     </div>
   );
-  // ;
 }

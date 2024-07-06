@@ -3,21 +3,27 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import useBookStore from "../../store/bookStore";
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Cookies } from "react-cookie";
 import { getBackgroundColor } from "./lib/getBackgroundColor";
+import { useUpdateRankMutation } from "./hooks/useUpdateRankMutation";
+import { useBookQuery } from "../categorize/hooks/useBookQuery";
+import Loading from "../components/loading";
 
 export default function Rank() {
-  const router = useRouter();
-
-  const books = useBookStore((set) => set.books);
-  const updateBookRanks = useBookStore((set) => set.updateBookRanks);
-
-  const filteredBooks = books.filter((book) => book.status === "y");
+  const { data: books } = useBookQuery();
+  const { completedBookIds } = useBookStore((state) => state);
 
   const [selectedBookIds, setSelectedBookIds] = useState<Array<number>>([]);
-  // const [selectedBooks, setSelectedBooks] = useState<Book[]>([]);
+  const { mutate } = useUpdateRankMutation();
+
+  if (!books) {
+    return <Loading />;
+  }
+
+  const filteredBooks = books.filter((book) =>
+    completedBookIds.includes(book.bookId)
+  );
 
   // 책을 클릭했을 때 호출될 함수
   const toggleBookSelection = (bookId: number) => {
@@ -37,67 +43,32 @@ export default function Rank() {
     });
   };
 
-  useEffect(() => {
-    console.log(filteredBooks);
-  }, [filteredBooks]);
-
-  async function handleSubmitButton() {
-    // updateBookRanks(Array.from(selectedBookIds));
-
-    try {
-      const body = filteredBooks.map((book) => {
-        return {
-          bookId: book.bookId,
-          status: book.status,
-          rank: selectedBookIds.indexOf(book.bookId) + 1,
-        };
-      });
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/book`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      if (!response.ok) {
-        throw new Error("서버에서 요청을 처리할 수 없습니다.");
-      }
-
-      // 요청 성공 시, 결과 페이지로 라우팅
-      router.push("/result");
-    } catch (error) {
-      console.error("요청 실패:", error);
-      alert("순위 업데이트에 실패했습니다. 다시 시도해주세요.");
-    }
-  }
+  const handleSubmitButton = async () => {
+    const body = filteredBooks.map((book) => {
+      return {
+        bookId: book.bookId,
+        // status: book.status,
+        rank: selectedBookIds.indexOf(book.bookId) + 1,
+      };
+    });
+    mutate(body);
+  };
 
   return (
-    <main className="flex flex-col items-center w-full h-full pb-10">
+    <main className="flex flex-col items-center w-full h-full p-2 space-y-2 justify-between">
       <h1 className="text-3xl">책장 분석이 완료되었습니다!</h1>
-      <div className="mt-2 mb-2 font-light text-gray-500 text-l">
+      <div className="font-light text-gray-500 text-l">
         좋아하는 순서로 순위를 매겨주세요!(최대 5권)
       </div>
-      {/* <div>
-        <span className="text-green-600">1순위: 초록</span>
-
-        <span className="text-blue-600">2순위: 파랑</span>
-
-        <span className="text-red-600">3순위: 빨강</span>
-      </div> */}
-
-      <div className="w-4/5 p-4 space-y-4 overflow-y-auto border rounded-lg shadow-2xl h-3/4 mb-30 border-slate-300">
+      <div className="w-full p-4 space-y-4 overflow-y-auto border rounded-lg shadow-2xl h-3/4 mb-30 border-slate-300">
         {filteredBooks &&
           filteredBooks.map((item) => (
             <div
               key={item.bookId}
-              className={`flex flex-row justify-between items-center rounded-lg p-2 ${getBackgroundColor(
+              className={`flex flex-row justify-between items-center rounded-lg p-2 cursor-pointer ${getBackgroundColor(
                 selectedBookIds.indexOf(item.bookId)
               )}`}
               onClick={() => toggleBookSelection(item.bookId)}
-              style={{ cursor: "pointer" }}
             >
               <div className="flex items-center mb-2">
                 <div className="flex-shrink-0">
@@ -131,7 +102,7 @@ export default function Rank() {
       </div>
       <Button
         onClick={handleSubmitButton}
-        className="bg-[#F59E0B] text-white w-4/5 mt-10"
+        className="bg-[#F59E0B] text-white w-full"
       >
         분석하기
       </Button>

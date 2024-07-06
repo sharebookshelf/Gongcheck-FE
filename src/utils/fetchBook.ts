@@ -1,18 +1,7 @@
 import useBookStore from "@/store/bookStore";
-import { Cookies } from "react-cookie";
 
 // 책 리스트를 가져와 Zustand 스토어에 저장하는 함수
 export async function fetchBook() {
-  // const cookies = new Cookies();
-
-  // const id = cookies.get("userId"); // 'id' 쿠키 읽기
-  // // const id = 1;
-
-  // if (!id) {
-  //   console.error("No ID found in cookies");
-  //   return;
-  // }
-
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/book`);
     if (!response.ok) {

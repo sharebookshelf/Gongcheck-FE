@@ -56,7 +56,7 @@ export default function InfoInput({ uploadedFiles }: Props) {
   const onSubmit = async (data: z.infer<typeof userInfoSchema>) => {
     const formData = new FormData();
     uploadedFiles.forEach((file) => {
-      formData.append("files", file);
+      formData.append("bookshelfImages", file);
     });
     Object.keys(data).forEach((key) => {
       formData.append(key, data[key as keyof Data]);
@@ -71,89 +71,87 @@ export default function InfoInput({ uploadedFiles }: Props) {
   }
 
   return (
-    <div className="flex flex-col w-4/5 mt-10 mb-10">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="nickname"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base font-bold">
-                  닉네임 <span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input placeholder="이름을 입력해주세요." {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="birth"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-base font-bold">
-                  생년월일 <span className="text-red-500">*</span>
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="ex) 19901216"
-                    {...field}
-                    value={field.value}
-                    onChange={(e) => {
-                      const cleanInput = e.target.value.replace(/\D/g, ""); // 숫자가 아닌 문자 제거
-                      const formattedInput = transformDate(cleanInput);
-                      field.onChange(formattedInput); // 업데이트된 값을 form 필드에 설정
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="gender"
-            render={({ field }) => (
-              <FormItem className="space-y-3">
-                <FormLabel className="text-base font-bold">성별</FormLabel>
-                <FormControl>
-                  <RadioGroup
-                    onValueChange={field.onChange}
-                    defaultValue="m"
-                    className="flex flex-col space-y-1"
-                  >
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="m" />
-                      </FormControl>
-                      <FormLabel className="text-base">남자</FormLabel>
-                    </FormItem>
-                    <FormItem className="flex items-center space-x-3 space-y-0">
-                      <FormControl>
-                        <RadioGroupItem value="w" />
-                      </FormControl>
-                      <FormLabel className="text-base">여자</FormLabel>
-                    </FormItem>
-                  </RadioGroup>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="w-full flex justify-center">
-            <Button
-              className="w-full mb-10 bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
-              type="submit"
-              disabled={!uploadedFiles || uploadedFiles.length === 0}
-            >
-              등록하기
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          control={form.control}
+          name="nickname"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-bold">
+                닉네임 <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input placeholder="이름을 입력해주세요." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="birth"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-base font-bold">
+                생년월일 <span className="text-red-500">*</span>
+              </FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="ex) 19901216"
+                  {...field}
+                  value={field.value}
+                  onChange={(e) => {
+                    const cleanInput = e.target.value.replace(/\D/g, ""); // 숫자가 아닌 문자 제거
+                    const formattedInput = transformDate(cleanInput);
+                    field.onChange(formattedInput); // 업데이트된 값을 form 필드에 설정
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="gender"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormLabel className="text-base font-bold">성별</FormLabel>
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue="m"
+                  className="flex flex-col space-y-1"
+                >
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="m" />
+                    </FormControl>
+                    <FormLabel className="text-base">남자</FormLabel>
+                  </FormItem>
+                  <FormItem className="flex items-center space-x-3 space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="w" />
+                    </FormControl>
+                    <FormLabel className="text-base">여자</FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="w-full flex justify-center">
+          <Button
+            className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
+            type="submit"
+            disabled={!uploadedFiles || uploadedFiles.length === 0}
+          >
+            등록하기
+          </Button>
+        </div>
+      </form>
+    </Form>
   );
 }
