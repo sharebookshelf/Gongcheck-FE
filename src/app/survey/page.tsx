@@ -3,11 +3,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import { useState } from "react";
-import FirstSurvey from "./components/FirstSurvey";
 import useSurveyStore from "@/store/surveyStore";
 import { useSurveyMutation } from "./hooks/useSurveyMutation";
 import { SyncLoader } from "react-spinners";
 import useSuccessStore from "@/store/successStore";
+import FirstSurvey from "./components/FirstSurvey";
 import SecondSurvey from "./components/SecondSurvey";
 import ThirdSurvey from "./components/ThirdSurvey";
 
