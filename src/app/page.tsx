@@ -16,8 +16,11 @@ export default function Home() {
     <main className="flex flex-col justify-between w-4/5 h-full p-4">
       <div className="flex flex-col items-center justify-center p-4 text-center">
         <Image
+          // src="https://www.nl.go.kr/seoji/fu/ecip/dbfiles/CIP_FILES_TBL/2022/01/06/9791191714050.jpg"
           src={logo}
           alt="Background"
+          // width={100}
+          // height={100}
           quality={100}
           style={{
             width: "150px",
@@ -26,7 +29,7 @@ export default function Home() {
           priority
         />
         <h1 className="mb-10 text-lg text-orange-500">공유책장</h1>
-        <div className="items-center justify-center h-32">
+        <div className="items-center justify-center h-32 font-bold">
           <p className="mb-5 text-2xl">
             내{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-red-500 to-orange-500">

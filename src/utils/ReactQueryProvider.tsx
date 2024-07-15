@@ -1,11 +1,18 @@
 "use client";
-import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
+import { toast } from "@/components/ui/use-toast";
+import {
+  QueryClientProvider,
+  QueryClient,
+  QueryCache,
+} from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ReactQueryProviders({
   children,
 }: React.PropsWithChildren) {
+  const router = useRouter();
   const [client] = useState(
     new QueryClient({
       defaultOptions: {
@@ -20,6 +27,30 @@ export default function ReactQueryProviders({
           gcTime: 1000 * 60 * 60,
         },
       },
+      // queryCache: new QueryCache({
+      //   onError: (error, query) => {
+      //     console.log(error, query);
+      //     if (
+      //       error.message ===
+      //       "세션이 없거나 만료되었습니다. 책장을 다시 등록해주세요"
+      //     ) {
+      //       toast({
+      //         variant: "destructive",
+      //         title: error.message,
+      //         description: "3초뒤 홈화면으로 돌아갑니다.",
+      //       });
+      //       setTimeout(() => {
+      //         router.push("/");
+      //       }, 3000);
+      //     } else {
+      //       toast({
+      //         variant: "destructive",
+      //         title: error.message,
+      //         // description: "3초뒤 홈화면으로 돌아갑니다.",
+      //       });
+      //     }
+      //   },
+      // }),
     })
   );
 

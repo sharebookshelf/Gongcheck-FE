@@ -22,7 +22,7 @@ export function usePasswordUpdateMutation() {
     mutationKey: ["updatePassword"],
     mutationFn: async ({ password }: PasswordUpdateRequest) => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/upload/bookshelf/password`,
+        `${process.env.NEXT_PUBLIC_API_URL}/users/me/bookshelves/password`,
         {
           method: "PATCH",
           headers: {
@@ -45,8 +45,8 @@ export function usePasswordUpdateMutation() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["bookshelves"] });
       toast({
-        title: "비밀번호 변경 성공",
-        description: "비밀번호가 성공적으로 변경되었습니다.",
+        title: "비밀번호 설정 성공",
+        description: "비밀번호가 성공적으로 설정되었습니다.",
       });
       router.push("/community");
     },

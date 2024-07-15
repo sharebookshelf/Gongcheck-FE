@@ -14,14 +14,17 @@ export function useUpdateRankMutation() {
   return useMutation({
     mutationKey: ["fetchSurvey"],
     mutationFn: async (data: Request[]) => {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/book`, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/users/me/books`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "PATCH",
+          credentials: "include",
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json(); // 에러 메시지를 포함할 수 있는 응답의 본문

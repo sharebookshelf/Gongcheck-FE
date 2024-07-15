@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["localhost"],
+    domains: ["localhost", "nl.go.kr"],
     remotePatterns: [
       {
         protocol: "https",
@@ -20,6 +20,18 @@ const nextConfig = {
         hostname: "host.docker.internal",
         port: "",
         pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "www.nl.go.kr",
+        port: "",
+        // pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.nl.go.kr",
+        port: "",
+        // pathname: "/**",
       },
     ],
   },

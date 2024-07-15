@@ -20,11 +20,11 @@ export function useUploadMutation() {
       await new Promise((resolve) => {
         // 10초 후에 resolve 함수를 호출하여 Promise가 완료되었음을 알림
         setTimeout(() => {
-          console.log("데이터 처리 완료");
+          // console.log("데이터 처리 완료");
           resolve("데이터 준비 완료");
         }, 3000); // 3초 대기
       });
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookshelves`, {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -40,6 +40,7 @@ export function useUploadMutation() {
         description: "입력하신 정보를 확인 후 다시 한 번 시도해주세요.",
         // action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
+      router.replace("/");
     },
   });
 }

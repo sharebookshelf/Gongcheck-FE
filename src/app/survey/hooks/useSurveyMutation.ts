@@ -12,7 +12,7 @@ export function useSurveyMutation() {
   return useMutation({
     mutationKey: ["fetchSurvey"],
     mutationFn: async (surveyData: Question) => {
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/survey`, {
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/me/surveys`, {
         headers: {
           "Content-Type": "application/json",
         },

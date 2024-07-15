@@ -8,10 +8,17 @@ export interface BookShelf {
   createdAt: string;
   updatedAt: string;
   status: string | null;
+  userNickanme: string;
+}
+
+interface BookshelvesResponse {
+  bookshelves: BookShelf[];
+  nickname: string;
+  readingType: string;
 }
 
 export const useUserBookshelfQuery = () => {
-  return useQuery<BookShelf[]>({
+  return useQuery<BookshelvesResponse>({
     queryKey: ["bookshelves"],
     queryFn: () => getUserBookshelf(),
   });

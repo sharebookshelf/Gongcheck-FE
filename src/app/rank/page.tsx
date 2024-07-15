@@ -55,22 +55,22 @@ export default function Rank() {
   };
 
   return (
-    <main className="flex flex-col items-center w-full h-full p-2 space-y-2 justify-between">
+    <main className="flex flex-col items-center justify-between w-full h-full p-2 space-y-2">
       <h1 className="text-3xl">책장 분석이 완료되었습니다!</h1>
       <div className="font-light text-gray-500 text-l">
         좋아하는 순서로 순위를 매겨주세요!(최대 5권)
       </div>
-      <div className="w-full p-4 space-y-4 overflow-y-auto border rounded-lg shadow-2xl h-3/4 mb-30 border-slate-300">
+      <div className="w-full p-4 space-y-4 overflow-y-auto border rounded-lg shadow-2xl h-3/4 border-slate-300">
         {filteredBooks &&
           filteredBooks.map((item) => (
             <div
               key={item.bookId}
-              className={`flex flex-row justify-between items-center rounded-lg p-2 cursor-pointer ${getBackgroundColor(
+              className={`flex flex-row hover:bg-gray-200 justify-between items-center rounded-lg p-2 cursor-pointer ${getBackgroundColor(
                 selectedBookIds.indexOf(item.bookId)
               )}`}
               onClick={() => toggleBookSelection(item.bookId)}
             >
-              <div className="flex items-center mb-2">
+              <div className="flex items-center">
                 <div className="flex-shrink-0">
                   <Image
                     alt="Book cover"

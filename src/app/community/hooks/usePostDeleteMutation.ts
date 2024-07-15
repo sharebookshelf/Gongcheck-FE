@@ -1,25 +1,27 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 
 type Props = {
-  isAgree: string;
-  feedback: string;
+  postId: number;
+  password: string;
 };
 
-export function useFeedbackMutation() {
+export function usePostDeleteMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
-    mutationKey: ["feedback"],
-    mutationFn: async ({ isAgree, feedback }: Props) => {
+    mutationKey: ["deleteBookshelf"],
+    mutationFn: async ({ postId, password }: Props) => {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/users/me/feedback?isAgree=${isAgree}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/bookshelves`,
         {
           headers: {
             "Content-Type": "application/json",
           },
-          method: "PATCH",
+          method: "DELETE",
           credentials: "include",
-          body: JSON.stringify({ feedback }),
+          body: JSON.stringify({ postId, password }),
         }
       );
       if (!response.ok) {
@@ -32,25 +34,18 @@ export function useFeedbackMutation() {
       return response.json(); // 성공 응답 데이터 반환
     },
     onSuccess: (data) => {
+      queryClient.invalidateQueries();
       toast({
-        title: "피드백 전송에 성공하였습니다.",
+        title: "책장 삭제에 성공하였습니다.",
       });
     },
     onError: (error: any) => {
-      // console.log(error);
-      if (error.status === 409) {
-        toast({
-          variant: "destructive",
-          title: "이미 피드백을 전송하셨습니다.",
-          // description: "잠시 후 다시 시도해주세요.",
-        });
-      } else {
-        toast({
-          variant: "destructive",
-          title: error.message,
-          description: "잠시 후 다시 시도해주세요.",
-        });
-      }
+      toast({
+        variant: "destructive",
+        title: error.message,
+        description: "다시 시도해주세요.",
+      });
+
       console.error(
         "There was a problem with your fetch operation:",
         error.message

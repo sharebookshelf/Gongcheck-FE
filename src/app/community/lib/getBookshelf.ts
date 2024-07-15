@@ -1,23 +1,6 @@
-// export async function getBookshelf() {
-//   const response = await fetch(
-//     `${process.env.NEXT_PUBLIC_API_URL}/book/bookshelf`,
-//     {
-//       next: {
-//         tags: ["bookshelves"],
-//       },
-//       credentials: "include",
-//     }
-//   );
-
-//   if (!response.ok) {
-//     throw new Error("Network response was not ok");
-//   }
-
-//   return response.json();
-// }
-export async function getBookshelf(page: number) {
+export async function getBookshelf(page: number, sorting: string) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/book/bookshelf?page=${page}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/bookshelves?page=${page}&sort=${sorting}`,
     {
       next: {
         tags: ["bookshelves"],
@@ -25,10 +8,14 @@ export async function getBookshelf(page: number) {
       credentials: "include",
     }
   );
-
-  if (!response.ok) {
-    throw new Error("Network response was not ok");
+  if (page !== 1) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 
-  return response.json();
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.statusCode);
+  }
+
+  return data;
 }

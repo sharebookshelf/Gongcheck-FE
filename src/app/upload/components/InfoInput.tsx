@@ -98,6 +98,7 @@ export default function InfoInput({ uploadedFiles }: Props) {
               </FormLabel>
               <FormControl>
                 <Input
+                  type="date"
                   placeholder="ex) 19901216"
                   {...field}
                   value={field.value}

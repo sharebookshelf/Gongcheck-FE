@@ -27,10 +27,26 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
     e.preventDefault();
     if (e.target.files && e.target.files.length > 0) {
       const filesArray = Array.from(e.target.files);
-      const uploadedFiles: File[] = []; // 업로드된 파일을 저장할 배열
+      const uploadedFiles: File[] = [];
+      const validImageTypes = ["image/jpeg", "image/png"];
+      const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
 
+      for (const file of filesArray) {
+        if (!validImageTypes.includes(file.type)) {
+          alert("이미지 지원 형식에 맞지 않는 파일입니다(png, jpeg)");
+          // console.log("Invalid file type");
+          return;
+        }
+
+        if (file.size > maxSizeInBytes) {
+          alert("파일 이미지 용량이 너무 큽니다.(10MB 제한)");
+          // console.log("File size too large");
+          return;
+        }
+      }
       filesArray.forEach((file, index) => {
         const reader = new FileReader();
+        console.log(file.type);
 
         // dataUrl로 읽고 난 이후의 콜백함수
         reader.onloadend = () => {

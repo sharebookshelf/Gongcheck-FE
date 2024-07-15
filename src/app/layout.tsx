@@ -19,6 +19,11 @@ declare global {
   }
 }
 
+const notoSansKr = Noto_Sans_KR({
+  weight: ["500"],
+  subsets: ["latin"],
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={notoSansKr.className}>
         <ReactQueryProviders>
           <div className="relative items-center justify-center min-h-screen">
             <Image
@@ -43,12 +48,10 @@ export default function RootLayout({
             <div className="flex items-center justify-center w-full h-full bg-black bg-opacity-60">
               <main className="relative flex flex-col h-screen w-full max-w-[450px] overflow-hidden">
                 <Header />
-                <div className="flex flex-col items-center justify-center flex-grow h-full p-2 py-4 overflow-y-auto bg-white">
+                <div className="flex flex-col items-center justify-center h-full p-2 py-4 overflow-y-auto bg-white">
                   {children}
-                  {/* <div className="bg-red-50 h-[1000px]">as</div> */}
                 </div>
                 <div className="border"></div>
-                {/* <FooterNav /> */}
               </main>
             </div>
             <Toaster />
