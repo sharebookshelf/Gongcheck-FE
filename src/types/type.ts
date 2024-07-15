@@ -18,4 +18,5 @@ export interface Book {
 
 export interface SurveyPageProps {
   setQuestionPageNumber: (pageNumber: number) => void;
+  paginate: (newDirection: number) => void;
 }

@@ -1,6 +1,9 @@
 "use client";
 
-import { getResultByUserId, useResult } from "@/hooks/useResult";
+import {
+  getResultByUserId,
+  useResultQuery,
+} from "@/app/result/hooks/useResult";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { readingTypeInfo } from "./resultData";
@@ -23,15 +26,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
+import RadarChart from "./components/RadarChart";
+import { toast } from "@/components/ui/use-toast";
+import { RefreshButton } from "./components/RefreshButton";
 
 export default function Page() {
-  const { status, data, error, isFetching } = useResult();
+  const router = useRouter();
+
+  const { status, data: result, error, isError, isFetching } = useResultQuery();
   const [link, setLink] = useState("https://yourwebsite.com");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-
-  const router = useRouter();
-
   const [typeInfo, setTypeInfo] = useState<{
     type: string;
     image: string;
@@ -95,44 +100,60 @@ export default function Page() {
     }
   }, [readingType]);
 
-  if (!data || !typeInfo) {
+  if (isError) {
+    if (error.message === "401") {
+      toast({
+        variant: "destructive",
+        title: "세션이 존재하지 않거나 만료되었습니다.",
+        description: "홈화면으로 돌아갑니다.",
+      });
+      router.push("/");
+    } else {
+      toast({
+        variant: "destructive",
+        title: "오류가 발생했습니다.",
+        description: "잠시후 다시 시도해주세요.",
+      });
+    }
+  }
+
+  if (!result || !typeInfo) {
     return <Loading />;
   }
-  console.log(isChecked);
 
   return (
     <AlertDialog>
       <div className="flex flex-col items-center w-full h-full p-4 space-y-4 overflow-y-auto">
         <div className="flex flex-col space-y-4">
-          <h1 className="w-full text-3xl font-light text-center">
+          <h1 className="w-full text-2xl font-extrabold text-center">
             당신의 독서 유형은...
           </h1>
-          {data && (
-            <div className="flex flex-col items-center w-full h-full p-4 space-y-10 border">
-              <h2 className="text-2xl">{typeInfo.type}</h2>
-              <Image
-                className="rounded-md"
-                width={330}
-                height={330}
-                priority
-                src={typeInfo.image as string}
-                alt={typeInfo.type as string}
-              />
-              <div>{typeInfo.analysis}</div>
-              <div>{typeInfo.feature}</div>
-              <div>{typeInfo.readingMethod}</div>
-            </div>
-          )}
+          <div className="flex flex-col items-center text-gray-700 w-full h-full p-4 space-y-10 border">
+            <h2 className="text-xl">{typeInfo.type}</h2>
+            <Image
+              className="rounded-md"
+              width={330}
+              height={330}
+              priority
+              src={typeInfo.image}
+              alt={typeInfo.type}
+            />
+            <RadarChart />
+            <div>{typeInfo.analysis}</div>
+            <div>{typeInfo.feature}</div>
+            <div>{typeInfo.readingMethod}</div>
+          </div>
+          {/* <Radar options={chartOptions} data={chartData} /> */}
           <AgreeButton />
-          <div className="w-full flex flex-row justify-center items-center space-x-4">
+          <div className="flex flex-row items-center justify-center w-full space-x-4">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="px-4 py-2 bg-orange-400 text-white rounded hover:bg-orange-500"
+              className="px-4 py-2 text-white bg-orange-400 rounded hover:bg-orange-500"
             >
               공유하기
             </button>
           </div>
-          <div className="mb-4 text-center text-lg font-medium text-[#333333]">
+          <div className="mb-4 text-center text-base font-medium text-[#333333]">
             나와 비슷한 성향의 사람들은 어떤 책을 갖고 있을까요?
           </div>
           <AlertDialogTrigger asChild>
@@ -152,8 +173,8 @@ export default function Page() {
           shareKakao={shareKakao}
         />
       </div>
-      <AlertDialogContent className="flex flex-col justify-center">
-        <AlertDialogHeader className="flex flex-col justify-center items-center">
+      <AlertDialogContent className="flex flex-col justify-center p-4">
+        <AlertDialogHeader className="flex flex-colw-full items-center justify-center">
           <AlertDialogTitle className="text-2xl">
             다른 사람의 책장을 탐험하세요!
           </AlertDialogTitle>
@@ -161,19 +182,25 @@ export default function Page() {
             당신의 책장을 공유하고, 다른 독서가들의 멋진 책장을 발견할 수 있는
             기회를 놓치지 마세요!
           </AlertDialogDescription>
-          <AlertDialogTitle className="">책장을 공유하면?</AlertDialogTitle>
-          <AlertDialogDescription>
-            1. 다른 사람들이 올린 책장을 둘러볼 수 있어요!
-            <br />
-            2. 나와 독서 성향이 비슷한 사람들은 어떤 책을 읽는지 파악할 수
-            있어요!
-          </AlertDialogDescription>
-          <AlertDialogTitle>안심하세요!</AlertDialogTitle>
-          <AlertDialogDescription>
-            공개된 책장 사진은 오직 책 정보만을 공유하며, 개인 정보는 철저히
-            보호됩니다.
-          </AlertDialogDescription>
-          <div className="flex space-x-2 items-center">
+        </AlertDialogHeader>
+        <div className="flex flex-col h-full p-6 space-y-10">
+          <div className="space-y-2">
+            <div className="text-xl">책장을 공유하면?</div>
+            <div className="text-gray-600">
+              1. 다른 사람들이 올린 책장을 둘러볼 수 있어요!
+              <br />
+              2. 나와 독서 성향이 비슷한 사람들은 어떤 책을 읽는지 파악할 수
+              있어요!
+            </div>
+          </div>
+          <div className="space-y-2">
+            <div className="text-xl">안심하세요!</div>
+            <div className="text-gray-600">
+              공개된 책장 사진은 오직 책 정보만을 공유하며, 개인 정보는 철저히
+              보호됩니다.
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
             <Checkbox
               id="terms"
               // checked={isChecked}
@@ -183,7 +210,7 @@ export default function Page() {
               나의 책장 사진을 공유하는 것에 동의합니다.
             </label>
           </div>
-        </AlertDialogHeader>
+        </div>
         <AlertDialogFooter>
           <AlertDialogCancel onClick={() => setIsChecked(false)}>
             취소

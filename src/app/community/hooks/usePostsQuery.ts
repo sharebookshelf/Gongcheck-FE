@@ -21,20 +21,24 @@ export interface User {
   createdAt: string;
   updatedAt: string;
   status: null | string;
-  bookshelf: Bookshelf[];
+  // bookshelf: Bookshelf[];
 }
 
-// export const usePostsQuery = () => {
-//   return useQuery<User[]>({
-//     queryKey: ["posts"],
-//     queryFn: () => getBookshelf(),
-//   });
-// };
+export interface Post {
+  postId: number;
+  password: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  bookshelves: Bookshelf[];
+  user: User;
+  // likeCount: number;
+}
 
-export const usePostsQuery = () => {
-  return useInfiniteQuery<User[]>({
-    queryKey: ["posts"],
-    queryFn: ({ pageParam = 1 }) => getBookshelf(pageParam as number),
+export const usePostsQuery = (sorting: string) => {
+  return useInfiniteQuery<Post[]>({
+    queryKey: ["posts", sorting],
+    queryFn: ({ pageParam = 1 }) => getBookshelf(pageParam as number, sorting),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages) => {
       return lastPage.length ? allPages.length + 1 : undefined;

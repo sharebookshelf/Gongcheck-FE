@@ -18,11 +18,13 @@ import { FormSchema } from "../lib/FormSchema";
 import { z } from "zod";
 import Image from "next/image";
 import { useBookQuery } from "../hooks/useBookQuery";
+import Loading from "@/app/components/loading";
+import { toast } from "@/components/ui/use-toast";
 
 export default function Categorize() {
   const router = useRouter();
   const { setCompletedBookIds } = useBookStore((state) => state);
-  const { data: books } = useBookQuery();
+  const { data: books, isError, error } = useBookQuery();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -36,80 +38,86 @@ export default function Categorize() {
     router.push("/rank");
   }
 
+  // console.log(isError);
+
+  if (
+    isError &&
+    error.message === "세션이 없거나 만료되었습니다. 책장을 다시 등록해주세요"
+  ) {
+    toast({
+      variant: "destructive",
+      title: error.message,
+      description: "홈화면으로 돌아갑니다.",
+    });
+    router.push("/");
+  }
+
+  if (!books) {
+    return <Loading />;
+  }
+
   return (
     <>
-      <div className="w-full p-4 overflow-y-auto border rounded-lg shadow-2xl h-4/5 mb-30 border-slate-300 ">
+      <div className="flex flex-col w-full h-full p-4 overflow-y-auto border rounded-lg shadow-2xl border-slate-300 ">
         <Form {...form}>
           <form
             id="category"
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8"
+            className="flex flex-col space-y-2"
           >
             <FormField
               control={form.control}
               name="items"
-              render={() => (
-                <FormItem>
-                  {books &&
-                    books.map((item) => (
-                      <FormField
-                        key={item.bookId}
-                        control={form.control}
-                        name="items"
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={item.bookId}
-                              className="flex flex-row items-center space-x-3 space-y-0"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(item.bookId)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([
-                                          ...field.value,
-                                          item.bookId,
-                                        ])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== item.bookId
-                                          )
-                                        );
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="text-sm font-normal">
-                                <div className="flex flex-row items-center justify-center space-x-2 space-y-2">
-                                  <Image
-                                    alt="Book cover"
-                                    className="object-cover w-10 h-15 flex-shrink-0 aspect-[40/60]"
-                                    height="60"
-                                    src={item.titleUrl || "/images/logo.png"}
-                                    width="40"
-                                  />
-                                  <div className="flex flex-col justify-center space-y-1">
-                                    <div className="text-sm font-light">
-                                      {item.title}
-                                    </div>
-                                    <div className="text-xs text-gray-500">
-                                      {item.publisher}
-                                    </div>
-                                    <div className="text-xs text-gray-500">
-                                      {item.author}
-                                    </div>
-                                  </div>
-                                </div>
-                              </FormLabel>
-                            </FormItem>
-                          );
-                        }}
-                      />
-                    ))}
-                  <FormMessage />
-                </FormItem>
+              render={({ field }) => (
+                <>
+                  {books.map((item) => (
+                    <FormItem
+                      key={item.bookId}
+                      className="cursor-pointer hover:bg-orange-50"
+                    >
+                      <div className="flex flex-row items-center w-full space-x-3">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value.includes(item.bookId)}
+                            onCheckedChange={(checked) => {
+                              return checked
+                                ? field.onChange([...field.value, item.bookId])
+                                : field.onChange(
+                                    field.value.filter(
+                                      (value) => value !== item.bookId
+                                    )
+                                  );
+                            }}
+                          />
+                        </FormControl>
+                        <FormLabel className="flex w-full h-full p-2 space-x-3 text-sm font-normal">
+                          <Image
+                            alt="Book cover"
+                            className="object-cover w-10 h-15 aspect-[40/60]"
+                            height="60"
+                            src={item.titleUrl || "/images/logo.png"}
+                            width="40"
+                            style={{ width: "auto", height: "100%" }}
+                          />
+                          <div className="flex flex-col justify-center space-y-1">
+                            <div className="text-sm font-light">
+                              {item.title}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {item.publisher}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {item.author}
+                            </div>
+                          </div>
+                        </FormLabel>
+                      </div>
+                    </FormItem>
+                  ))}
+                </>
               )}
             />
+            <FormMessage />
           </form>
         </Form>
       </div>

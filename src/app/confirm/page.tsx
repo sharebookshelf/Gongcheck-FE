@@ -28,6 +28,7 @@ import {
 import { usePasswordUpdateMutation } from "./hooks/usePasswordMutation";
 import Loading from "../components/loading";
 import { useUserBookshelfQuery } from "./hooks/useBookshelfQuery";
+import { readingTypeInfo } from "../result/resultData";
 
 const FormSchema = z.object({
   password: z
@@ -46,10 +47,6 @@ export default function Page() {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
-  //   const [firstImageSize, setFirstImageSize] = useState<{
-  //   width: number;
-  //   height: number;
-  // } | null>(null);
 
   useEffect(() => {
     if (!api) {
@@ -64,11 +61,10 @@ export default function Page() {
     });
   }, [api]);
 
-  const { data: bookshelves } = useUserBookshelfQuery();
-
+  const { data } = useUserBookshelfQuery();
   const { mutate } = usePasswordUpdateMutation();
 
-  if (!bookshelves) {
+  if (!data) {
     return <Loading />;
   }
 
@@ -81,40 +77,40 @@ export default function Page() {
     <div className="flex flex-col items-center p-4 h-full space-y-6 overflow-y-auto">
       <div className="text-center">
         <h1 className="text-3xl font-bold">나의 책장 공유하기</h1>
-        <p className="mt-2 text-lg">
+        <p className="mt-2 text-base">
           당신의 책장을 공유해주세요! 다른 사람들은 어떤 책을 읽을지
           탐험해보세요!
         </p>
       </div>
       <div className="w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">미리보기</h2>
-        <div className="bg-white rounded-lg shadow-xl p-4 border">
+        <div className="bg-white space-y-2 rounded-lg shadow-xl p-4 border">
           <div className="flex items-center mb-4">
             <UserIcon className="h-6 w-6 mr-2" />
-            <span className="text-lg font-medium">당근</span>
+            <span className="text-lg font-bold">{data.nickname}</span>
           </div>
-          <p className="text-lg font-bold mb-4">사회적 현실주의자 성향</p>
-          <div className="relative flex w-full bg-red-50 p-2">
+          <p className="text-base mb-4">
+            {
+              readingTypeInfo[data.readingType as keyof typeof readingTypeInfo]
+                .type
+            }
+          </p>
+          <div className=" flex w-full">
             <Carousel
               setApi={setApi}
               opts={{
                 align: "start",
-                dragFree: true,
+                // dragFree: true,
+                skipSnaps: true,
+                // inViewThreshold: 1,
               }}
             >
               <CarouselContent>
-                {bookshelves.map((bookshelf) => (
+                {data.bookshelves.map((bookshelf) => (
                   <CarouselItem key={bookshelf.id}>
-                    {/* <Image
-                      width={300}
-                      height={300}
-                      src={`${process.env.NEXT_PUBLIC_IMAGE_URL}${bookshelf.bookShelfImage}`}
-                      alt={`Bookshelf ${bookshelf.id}`}
-                      className="w-full rounded-lg"
-                    /> */}
-                    <div className="relative flex items-center justify-center w-full h-full bg-green-50">
+                    <div className="relative flex items-center justify-center w-full h-full">
                       <Image
-                        className="object-contain"
+                        className="object-contain w-full pointer-events-none"
                         priority
                         width={300}
                         height={300}
@@ -125,31 +121,29 @@ export default function Page() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10" />
-              <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10" />
+              {/* <CarouselPrevious className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10" />
+              <CarouselNext className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10" /> */}
             </Carousel>
-            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 p-4">
-              <div className="flex space-x-2">
-                {Array.from({ length: count }).map((_, index) => (
-                  <div
-                    key={index}
-                    className={`w-3 h-3 rounded-full ${
-                      current === index + 1 ? "bg-white" : "bg-gray-400"
-                    }`}
-                  ></div>
-                ))}
-              </div>
-            </div>
+          </div>
+          <div className="flex justify-center space-x-2">
+            {Array.from({ length: count }).map((_, index) => (
+              <div
+                key={index}
+                className={`w-2 h-2 rounded-full ${
+                  current === index + 1 ? "bg-orange-500" : "bg-gray-300"
+                }`}
+              ></div>
+            ))}
           </div>
         </div>
       </div>
       <div className="w-full max-w-md">
         <h2 className="text-xl font-bold mb-4">비밀번호 설정</h2>
+        <h2 className="text-xs mb-4">
+          비밀번호를 설정하여 책장을 삭제할 수 있습니다.
+        </h2>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8 p-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
             <FormField
               control={form.control}
               name="password"
