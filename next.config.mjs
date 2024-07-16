@@ -1,7 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_IMAGE_URL: process.env.NEXT_PUBLIC_IMAGE_URL,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+    NEXT_PUBLIC_BASE_HOST: process.env.NEXT_PUBLIC_BASE_HOST,
+    AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST,
+  },
+  publicRuntimeConfig: {
+    IMAGE_URL: process.env.NEXT_PUBLIC_IMAGE_URL,
+    API_URL: process.env.NEXT_PUBLIC_API_URL,
+    BASE_HOST: process.env.NEXT_PUBLIC_BASE_HOST,
+    AUTH_TRUST_HOST: process.env.AUTH_TRUST_HOST,
+  },
   images: {
-    domains: ["localhost", "nl.go.kr"],
     remotePatterns: [
       {
         protocol: "https",

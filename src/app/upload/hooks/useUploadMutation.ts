@@ -24,6 +24,7 @@ export function useUploadMutation() {
           resolve("데이터 준비 완료");
         }, 3000); // 3초 대기
       });
+      console.log(process.env.NEXT_PUBLIC_API_URL);
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookshelves`, {
         method: "POST",
         credentials: "include",

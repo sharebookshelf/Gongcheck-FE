@@ -12,6 +12,8 @@ export default function Home() {
     router.push("/upload");
   };
 
+  console.log(process.env.NEXT_PUBLIC_API_URL);
+
   return (
     <main className="flex flex-col justify-between w-4/5 h-full p-4">
       <div className="flex flex-col items-center justify-center p-4 text-center">
