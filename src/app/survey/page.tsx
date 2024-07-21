@@ -10,7 +10,6 @@ import useSuccessStore from "@/store/successStore";
 import FirstSurvey from "./components/FirstSurvey";
 import SecondSurvey from "./components/SecondSurvey";
 import ThirdSurvey from "./components/ThirdSurvey";
-import BookLoader from "./components/\bBookLoader";
 
 const variants = {
   enter: (direction: number) => ({
