@@ -21,14 +21,8 @@ const ShareModal = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
+    <div className="fixed inset-0 top-0 flex items-center justify-center bg-black bg-opacity-50 z-30">
       <div className="bg-white rounded-lg p-6 relative w-[300px] z-40">
-        {/* <button
-          onClick={onClose}
-          className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 z-50"
-        >
-          &times;
-        </button> */}
         <X
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-600 hover:text-gray-800 z-50 cursor-pointer"
@@ -37,7 +31,13 @@ const ShareModal = ({
         <div className="flex justify-around ">
           <button onClick={shareKakao} className="flex flex-col items-center">
             <div className="bg-yellow-400 p-3 rounded-full">
-              <Image src={kakaoIcon} alt="카카오톡" width={24} height={24} />
+              <Image
+                src={kakaoIcon}
+                alt="카카오톡"
+                width={24}
+                height={24}
+                style={{ width: "auto", height: "100%" }}
+              />
             </div>
             <span className="mt-2 text-sm">카카오톡</span>
           </button>

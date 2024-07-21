@@ -5,7 +5,7 @@ import {
   useResultQuery,
 } from "@/app/result/hooks/useResult";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { readingTypeInfo } from "./resultData";
 import Image from "next/image";
 import AgreeButton from "./components/AgreeButton";
@@ -29,12 +29,27 @@ import { useRouter } from "next/navigation";
 import RadarChart from "./components/RadarChart";
 import { toast } from "@/components/ui/use-toast";
 import { RefreshButton } from "./components/RefreshButton";
+import html2canvas from "html2canvas";
+
+const labels = [
+  "기타",
+  "철학",
+  "종교",
+  "사회과학",
+  "자연과학",
+  "기술과학",
+  "예술",
+  "언어학",
+  "문학",
+  "역사",
+];
 
 export default function Page() {
   const router = useRouter();
 
   const { status, data: result, error, isError, isFetching } = useResultQuery();
-  const [link, setLink] = useState("https://yourwebsite.com");
+
+  const [link, setLink] = useState("https://gongcheck.p-e.kr");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [typeInfo, setTypeInfo] = useState<{
@@ -61,9 +76,10 @@ export default function Page() {
       window.Kakao.Link.sendDefault({
         objectType: "feed",
         content: {
-          title: "공유할 제목",
-          description: "공유할 설명",
-          imageUrl: "https://yourimageurl.com/image.png",
+          title: "내 책장이 궁금해!",
+          description:
+            "책장 이미지를 업로드하고 나의 독서 성향과 가진 책의 비율을 확인하세요!",
+          imageUrl: "http://localhost/asset/logo.png",
           link: {
             mobileWebUrl: link,
             webUrl: link,
@@ -71,7 +87,7 @@ export default function Page() {
         },
         buttons: [
           {
-            title: "웹으로 보기",
+            title: "분석하러 가기",
             link: {
               mobileWebUrl: link,
               webUrl: link,
@@ -87,12 +103,12 @@ export default function Page() {
   const cookies = new Cookies();
   const readingType = cookies.get("readingType"); // 'id' 쿠키 읽기
 
-  const onClick = () => {
-    const { Kakao, location } = window;
-    Kakao.Link.sendScrap({
-      requestUrl: location.href,
-    });
-  };
+  // const onClick = () => {
+  //   const { Kakao, location } = window;
+  //   Kakao.Link.sendScrap({
+  //     requestUrl: location.href,
+  //   });
+  // };
 
   useEffect(() => {
     if (readingType) {
@@ -121,6 +137,27 @@ export default function Page() {
     return <Loading />;
   }
 
+  const topIndices = result.data.categoryCounts
+    .map((value, index) => [value, index])
+    .sort((a, b) => b[0] - a[0])
+    .slice(0, 2)
+    .map((item) => item[1]);
+
+  const captureAndDownload = () => {
+    const captureElement = document.getElementById("capture-area");
+    if (captureElement) {
+      html2canvas(captureElement).then((canvas) => {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = "capture.png";
+        link.click();
+      });
+      toast({
+        title: "이미지 저장에 성공했습니다.",
+      });
+    }
+  };
+
   return (
     <AlertDialog>
       <div className="flex flex-col items-center w-full h-full p-4 space-y-4 overflow-y-auto">
@@ -128,20 +165,31 @@ export default function Page() {
           <h1 className="w-full text-2xl font-extrabold text-center">
             당신의 독서 유형은...
           </h1>
-          <div className="flex flex-col items-center text-gray-700 w-full h-full p-4 space-y-10 border">
+          <div
+            id="capture-area"
+            className="flex flex-col items-center text-gray-700 w-full h-full p-4 space-y-10 border"
+          >
             <h2 className="text-xl">{typeInfo.type}</h2>
             <Image
-              className="rounded-md"
+              className="rounded-md object-center"
               width={330}
               height={330}
               priority
               src={typeInfo.image}
               alt={typeInfo.type}
             />
+            <div className="font-semibold">책장 카테고리 별 분포 현황</div>
             <RadarChart />
-            <div>{typeInfo.analysis}</div>
-            <div>{typeInfo.feature}</div>
-            <div>{typeInfo.readingMethod}</div>
+            <div className="text-xs">{`<${labels[topIndices[0]]}>과 <${
+              labels[topIndices[1]]
+            }> 카테고리가 많아요!`}</div>
+            <div className="font-light">
+              <div className="font-extrabold text-sm">{typeInfo.analysis}</div>
+              <br />
+              <div>{typeInfo.feature}</div>
+              <br />
+              <div>{typeInfo.readingMethod}</div>
+            </div>
           </div>
           {/* <Radar options={chartOptions} data={chartData} /> */}
           <AgreeButton />
@@ -151,6 +199,12 @@ export default function Page() {
               className="px-4 py-2 text-white bg-orange-400 rounded hover:bg-orange-500"
             >
               공유하기
+            </button>
+            <button
+              onClick={captureAndDownload}
+              className="px-4 py-2 text-white bg-blue-400 rounded hover:bg-blue-500"
+            >
+              이미지로 저장
             </button>
           </div>
           <div className="mb-4 text-center text-base font-medium text-[#333333]">

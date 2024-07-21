@@ -1,4 +1,3 @@
-import { toast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 
 export const getResultByUserId = async () => {
@@ -21,8 +20,16 @@ export const getResultByUserId = async () => {
   return data;
 };
 
+interface ResultResponse {
+  readingType: number;
+  categoryCounts: number[];
+}
+interface Response {
+  data: ResultResponse;
+}
+
 export function useResultQuery() {
-  return useQuery({
+  return useQuery<Response>({
     queryKey: ["result"],
     queryFn: () => getResultByUserId(),
   });

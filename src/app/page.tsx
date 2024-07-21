@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import logo from "../../public/images/logo.png";
 import { useRouter } from "next/navigation";
+import Head from "next/head";
 
 export default function Home() {
   const router = useRouter();
@@ -12,10 +13,11 @@ export default function Home() {
     router.push("/upload");
   };
 
-  console.log(process.env.NEXT_PUBLIC_API_URL);
-
   return (
     <main className="flex flex-col justify-between w-4/5 h-full p-4">
+      <Head>
+        <meta name="color-scheme" content="light" />
+      </Head>
       <div className="flex flex-col items-center justify-center p-4 text-center">
         <Image
           // src="https://www.nl.go.kr/seoji/fu/ecip/dbfiles/CIP_FILES_TBL/2022/01/06/9791191714050.jpg"

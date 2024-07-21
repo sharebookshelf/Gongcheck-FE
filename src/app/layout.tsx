@@ -8,6 +8,7 @@ import FooterNav from "@/app/components/FooterNav";
 import ReactQueryProviders from "@/utils/ReactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import KakaoScript from "./result/components/KakaoScript";
+import Head from "next/head";
 
 export const metadata: Metadata = {
   title: "Create Next App",

@@ -46,7 +46,7 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
       }
       filesArray.forEach((file, index) => {
         const reader = new FileReader();
-        console.log(file.type);
+        // console.log(file.type);
 
         // dataUrl로 읽고 난 이후의 콜백함수
         reader.onloadend = () => {

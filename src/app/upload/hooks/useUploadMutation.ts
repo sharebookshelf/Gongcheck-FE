@@ -22,9 +22,9 @@ export function useUploadMutation() {
         setTimeout(() => {
           // console.log("데이터 처리 완료");
           resolve("데이터 준비 완료");
-        }, 3000); // 3초 대기
+        }, 3 * 1000); // 3초 대기
       });
-      console.log(process.env.NEXT_PUBLIC_API_URL);
+      // console.log(process.env.NEXT_PUBLIC_API_URL);
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookshelves`, {
         method: "POST",
         credentials: "include",

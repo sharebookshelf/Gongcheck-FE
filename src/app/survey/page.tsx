@@ -10,6 +10,7 @@ import useSuccessStore from "@/store/successStore";
 import FirstSurvey from "./components/FirstSurvey";
 import SecondSurvey from "./components/SecondSurvey";
 import ThirdSurvey from "./components/ThirdSurvey";
+import BookLoader from "./components/\bBookLoader";
 
 const variants = {
   enter: (direction: number) => ({
@@ -92,6 +93,7 @@ export default function SurveyMainPage() {
         </div>
         <div className="absolute right-6">
           {isSuccess ? null : <SyncLoader color="#6E6E6E" />}
+          {/* {isSuccess ? null : <BookLoader />} */}
         </div>
       </button>
     </div>

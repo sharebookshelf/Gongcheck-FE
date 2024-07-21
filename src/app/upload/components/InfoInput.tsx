@@ -13,12 +13,6 @@ import {
   FormMessage,
   Form,
 } from "@/components/ui/form";
-import { toast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
-import { useRouter } from "next/navigation";
-import { useMutation } from "@tanstack/react-query";
-import useSuccessStore from "@/store/successStore";
-import useSurveyStore from "@/store/surveyStore";
 import { Button } from "@/components/ui/button";
 import { useUploadMutation } from "../hooks/useUploadMutation";
 import { transformDate } from "@/lib/utils";
