@@ -101,7 +101,7 @@ export default function Page() {
   };
 
   const cookies = new Cookies();
-  const readingType = cookies.get("readingType"); // 'id' 쿠키 읽기
+  // const readingType = cookies.get("readingType"); // 'id' 쿠키 읽기
 
   // const onClick = () => {
   //   const { Kakao, location } = window;
@@ -111,10 +111,14 @@ export default function Page() {
   // };
 
   useEffect(() => {
-    if (readingType) {
-      setTypeInfo(readingTypeInfo[readingType as keyof typeof readingTypeInfo]);
+    if (result) {
+      setTypeInfo(
+        readingTypeInfo[
+          result.data.readingType.toString() as keyof typeof readingTypeInfo
+        ]
+      );
     }
-  }, [readingType]);
+  }, [result]);
 
   if (isError) {
     if (error.message === "401") {

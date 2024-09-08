@@ -57,7 +57,7 @@ export default function RadarChart() {
             r: {
               beginAtZero: true,
               min: -1,
-              max: 10,
+              // max: 10,
             },
           },
           plugins: {

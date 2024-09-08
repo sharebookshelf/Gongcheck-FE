@@ -14,9 +14,9 @@ export default function Upload() {
   return (
     <main className="flex flex-col justify-start w-full h-full p-2 space-y-2 overflow-y-auto">
       <div className="flex flex-col w-full">
-        <div className="text-2xl text-center font-extrabold">내 책장 등록</div>
+        <div className="text-2xl text-center font-extrabold">책 등록</div>
         <div className="text-center text-sm text-gray-600">
-          책장 분석을 통한 내 독서 성향 분석하기
+          내가 읽었던 책들을 모두 등록해주세요!
         </div>
         <UploadImage onImageUploadComplete={onImageUploadComplete} />
       </div>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import logo from "../../public/images/logo.png";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
+import { useEffect } from "react";
 
 export default function Home() {
   const router = useRouter();

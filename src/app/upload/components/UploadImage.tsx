@@ -1,179 +1,140 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { XCircleIcon, PlusCircle } from "lucide-react";
+import useNaverBookStore, { NaverBook } from "@/store/naverBookStore";
+import { BookCheck, Minus, Plus, Search } from "lucide-react";
 import Image from "next/image";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Props {
   onImageUploadComplete: (files: File[]) => void;
 }
 
+interface BooksResponse {
+  // lastBuildDate: string;
+  // total: number;
+  // start: number;
+  // display: number;
+  items: NaverBook[];
+}
+
 export default function UploadImage({ onImageUploadComplete }: Props) {
-  const [preview, setPreview] = useState<
-    Array<{ dataUrl: string; file: File } | null>
-  >([]);
+  const { naverBooks, addBook, removeBook } = useNaverBookStore(
+    (state) => state
+  );
+  const [inputs, setInputs] = useState<string[]>([""]);
+  const [searchResults, setSearchResults] = useState<NaverBook[][]>([]);
 
-  useEffect(() => {
-    // preview에서 file 객체만 추출하여 새로운 files 배열을 생성
-    const updatedFiles = preview
-      .map((item) => item?.file)
-      .filter((file): file is File => !!file);
-
-    // 업데이트된 files 배열을 onImageUploadComplete 콜백을 통해 부모 컴포넌트에 전달
-    onImageUploadComplete(updatedFiles);
-  }, [preview, onImageUploadComplete]); // preview 배열이 변경될 때마다 이 로직을 실행
-
-  const onUpload = (e: ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    if (e.target.files && e.target.files.length > 0) {
-      const filesArray = Array.from(e.target.files);
-      const uploadedFiles: File[] = [];
-      const validImageTypes = ["image/jpeg", "image/png"];
-      const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
-
-      for (const file of filesArray) {
-        if (!validImageTypes.includes(file.type)) {
-          alert("이미지 지원 형식에 맞지 않는 파일입니다(png, jpeg)");
-          // console.log("Invalid file type");
-          return;
-        }
-
-        if (file.size > maxSizeInBytes) {
-          alert("파일 이미지 용량이 너무 큽니다.(10MB 제한)");
-          // console.log("File size too large");
-          return;
-        }
-      }
-      filesArray.forEach((file, index) => {
-        const reader = new FileReader();
-        // console.log(file.type);
-
-        // dataUrl로 읽고 난 이후의 콜백함수
-        reader.onloadend = () => {
-          setPreview((prevPreview) => [
-            ...prevPreview,
-            {
-              dataUrl: reader.result as string,
-              file,
-            },
-          ]);
-
-          // 파일 객체를 uploadedFiles 배열에 추가
-          uploadedFiles.push(file);
-
-          // 마지막 파일 처리가 끝났는지 확인
-          if (uploadedFiles.length === filesArray.length) {
-            // 모든 파일 처리가 완료되면, uploadedFiles 배열을 onImageUploadComplete에 전달
-            onImageUploadComplete(uploadedFiles);
-          }
-        };
-
-        reader.readAsDataURL(file);
-      });
-    }
+  const handleInputChange = (value: string, index: number) => {
+    const newInputs = [...inputs];
+    newInputs[index] = value;
+    setInputs(newInputs);
   };
 
-  const removeImageByIndex = (indexToRemove: number) => {
-    setPreview((prevPreview) =>
-      prevPreview.filter((_, index) => index !== indexToRemove)
-    );
+  const handleSearch = async (query: string, index: number) => {
+    const response = await fetch(`/api/searchBooks?query=${query}`);
+    const data = await response.json();
+
+    const books = data.items.map((item: any) => ({
+      title: item.title,
+      author: item.author,
+      link: item.link,
+      image: item.image,
+    }));
+    // console.log(books);
+
+    const newSearchResults = [...searchResults];
+    newSearchResults[index] = books;
+    setSearchResults(newSearchResults);
   };
 
-  const removeAllImage = () => {
-    setPreview([]);
+  // const handleAddInput = () => {
+  //   setInputs([...inputs, ""]);
+  //   setSearchResults([...searchResults, []]);
+  // };
+
+  const handleSelectBook = (book: NaverBook, index: number) => {
+    addBook(book);
+    // setSearchResults([]);
   };
+
+  const handleRemoveBook = (index: number) => {
+    removeBook(index);
+  };
+
+  // const handleRemoveInput = (index: number) => {
+  //   const newInputs = inputs.filter((_, i) => i !== index);
+  //   const newSearchResults = searchResults.filter((_, i) => i !== index);
+  //   setInputs(newInputs);
+  //   setSearchResults(newSearchResults);
+  // };
 
   return (
     <div className="flex flex-col items-center w-full p-2 mt-10 border-2 border-gray-400 border-dotted rounded-xl">
-      <Button
-        onClick={removeAllImage}
-        className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
-      >
-        업로드 초기화
-      </Button>
-      <div className="w-full">
-        {preview.length === 0 ? (
-          <div className="flex items-center justify-center w-full mt-4">
-            <label
-              htmlFor="dropzone-file"
-              className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+      <div className="text-xs text-left">{naverBooks.length}권 등록 완료</div>
+      {naverBooks.map((book: NaverBook, index: number) => (
+        <div key={index} className="flex items-center mb-2 w-full text-sm">
+          <span>
+            {book.title} - {book.author}
+          </span>
+          <button
+            className="ml-auto w-8 h-8 flex items-center justify-center bg-white text-red-500 border border-red-500 rounded-md hover:bg-red-500 hover:text-white transition-colors"
+            onClick={() => handleRemoveBook(index)}
+          >
+            <Minus />
+          </button>
+        </div>
+      ))}
+      {inputs.map((input, index) => (
+        <div key={index} className="flex items-center mb-2 w-full">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => handleInputChange(e.target.value, index)}
+            className="border-2 border-gray-300 rounded-md p-2 w-full h-8 text-sm"
+          />
+          <button
+            onClick={() => handleSearch(input, index)}
+            className="ml-2 w-8 h-8 flex items-center justify-center bg-white text-blue-500 border border-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition-colors"
+          >
+            <Search size={16} /> {/* 검색 아이콘 추가 */}
+          </button>
+        </div>
+      ))}
+      {searchResults.map((results, index) => (
+        <div
+          key={index}
+          className="flex flex-col w-full text-sm h-52 overflow-y-auto"
+        >
+          {results.map((book, bookIndex) => (
+            <div
+              key={bookIndex}
+              className="flex items-center w-full p-2 border-b"
             >
-              <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                <svg
-                  className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 16"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                  />
-                </svg>
-                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                  <span className="font-semibold">클릭하여 업로드하거나</span>{" "}
-                  드래그 앤 드롭
-                </p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
-                  PNG or JPG (MAX. 800x400px)
-                </p>
+              {/* 커버 이미지 추가 - 비율 유지, 블러 처리 */}
+              <div className="mr-4">
+                <Image
+                  style={{ height: "auto", width: "auto" }}
+                  src={book.image} // 커버 이미지 URL
+                  alt={`${book.title} cover`}
+                  width={30} // 너비 설정
+                  height={40} // 3:4 비율에 맞춘 높이 설정
+                  placeholder="blur" // 이미지 로딩 중 블러 효과
+                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==" // 블러 처리될 기본 이미지 (옵션)
+                />
               </div>
-              <input
-                id="dropzone-file"
-                type="file"
-                className="hidden"
-                onChange={onUpload}
-                multiple
-              />
-            </label>
-          </div>
-        ) : (
-          <div className="grid w-full grid-cols-3 gap-2 mt-4">
-            {preview.map(
-              (v, index) =>
-                v && (
-                  <div
-                    key={index}
-                    className="relative w-full overflow-hidden rounded-lg shadow-lg aspect-square"
-                  >
-                    <Image
-                      fill
-                      src={v.dataUrl}
-                      alt="미리보기"
-                      className="object-cover object-center"
-                    />
-                    <button
-                      onClick={() => removeImageByIndex(index)}
-                      className="absolute p-1 text-white bg-gray-500 rounded-full top-1 right-1 hover:bg-red-500"
-                    >
-                      <XCircleIcon size={20} color="white" />
-                    </button>
-                  </div>
-                )
-            )}
-            <label
-              htmlFor="dropzone-file-additional"
-              className="flex flex-col items-center justify-center w-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer aspect-square bg-gray-50 hover:bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:border-gray-500"
-            >
-              <PlusCircle
-                size={28}
-                className="text-gray-500 dark:text-gray-400"
-              />
-              <input
-                id="dropzone-file-additional"
-                type="file"
-                className="hidden"
-                onChange={onUpload}
-                multiple
-              />
-            </label>
-          </div>
-        )}
-      </div>
+              <div className="flex flex-col w-full gap-2 text-gray-600 text-xs">
+                <div>제목: {book.title}</div>
+                <div>저자: {book.author}</div>
+              </div>
+              <button
+                className="ml-auto p-1 h-8 bg-white text-green-500 border border-green-500 hover:bg-green-500 hover:text-white transition-colors rounded-md"
+                onClick={() => handleSelectBook(book, index)}
+              >
+                <BookCheck size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
