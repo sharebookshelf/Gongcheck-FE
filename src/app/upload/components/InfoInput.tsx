@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { useUploadMutation } from "../hooks/useUploadMutation";
 import { transformDate } from "@/lib/utils";
 import Loading from "@/app/components/loading";
+import { useUploadBookMutations } from "../hooks/useUploadBookMutation";
+import useNaverBookStore from "@/store/naverBookStore";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
@@ -25,17 +27,9 @@ const userInfoSchema = z.object({
   gender: z.enum(["m", "w"]),
 });
 
-interface Props {
-  uploadedFiles: File[];
-}
-interface Data {
-  nickname: string;
-  birth: string;
-  gender: string;
-}
-
-export default function InfoInput({ uploadedFiles }: Props) {
-  const { mutate, isPending } = useUploadMutation();
+export default function InfoInput() {
+  const { naverBooks } = useNaverBookStore((state) => state);
+  const { mutate } = useUploadBookMutations();
 
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
@@ -48,21 +42,13 @@ export default function InfoInput({ uploadedFiles }: Props) {
   });
 
   const onSubmit = async (data: z.infer<typeof userInfoSchema>) => {
-    const formData = new FormData();
-    uploadedFiles.forEach((file) => {
-      formData.append("bookshelfImages", file);
-    });
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key as keyof Data]);
-    });
-    // console.log(uploadedFiles.length);
-
-    mutate(formData);
+    const uploadInfo = {
+      ...data,
+      books: naverBooks,
+    };
+    console.log(uploadInfo);
+    mutate(uploadInfo);
   };
-
-  if (isPending) {
-    return <Loading />;
-  }
 
   return (
     <Form {...form}>
@@ -141,7 +127,7 @@ export default function InfoInput({ uploadedFiles }: Props) {
           <Button
             className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
             type="submit"
-            disabled={!uploadedFiles || uploadedFiles.length === 0}
+            disabled={!naverBooks || naverBooks.length === 0}
           >
             등록하기
           </Button>

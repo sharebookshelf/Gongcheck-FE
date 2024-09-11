@@ -1,16 +1,11 @@
 "use client";
 
-import {
-  getResultByUserId,
-  useResultQuery,
-} from "@/app/result/hooks/useResult";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useResultQuery } from "@/app/result/hooks/useResult";
+import { useEffect, useState } from "react";
 import { readingTypeInfo } from "./resultData";
 import Image from "next/image";
 import AgreeButton from "./components/AgreeButton";
 import { Button } from "@/components/ui/button";
-import { Cookies } from "react-cookie";
 import Loading from "../components/loading";
 import ShareModal from "./components/SharedModal";
 import {
@@ -28,7 +23,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import RadarChart from "./components/RadarChart";
 import { toast } from "@/components/ui/use-toast";
-import { RefreshButton } from "./components/RefreshButton";
+// import { RefreshButton } from "./components/RefreshButton";
 import html2canvas from "html2canvas";
 
 const labels = [
@@ -99,9 +94,6 @@ export default function Page() {
       alert("카카오톡 공유하기를 사용할 수 없습니다.");
     }
   };
-
-  const cookies = new Cookies();
-  // const readingType = cookies.get("readingType"); // 'id' 쿠키 읽기
 
   // const onClick = () => {
   //   const { Kakao, location } = window;

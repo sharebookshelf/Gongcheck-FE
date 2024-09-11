@@ -7,7 +7,7 @@ export interface NaverBook {
   publisher: string;
   image: string;
   isbn: string;
-  description: string;
+  description?: string;
 }
 
 // 상태 관리 인터페이스

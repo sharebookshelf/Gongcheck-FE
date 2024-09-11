@@ -3,14 +3,9 @@
 import UploadImage from "./components/UploadImage";
 import InfoInput from "./components/InfoInput";
 import { useCallback, useState } from "react";
+import { NaverBook } from "@/store/naverBookStore";
 
 export default function Upload() {
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-
-  const onImageUploadComplete = useCallback((files: File[]) => {
-    setUploadedFiles(files);
-  }, []);
-
   return (
     <main className="flex flex-col justify-start w-full h-full p-2 space-y-2 overflow-y-auto">
       <div className="flex flex-col w-full">
@@ -18,7 +13,7 @@ export default function Upload() {
         <div className="text-center text-sm text-gray-600">
           내가 읽었던 책들을 모두 등록해주세요!
         </div>
-        <UploadImage onImageUploadComplete={onImageUploadComplete} />
+        <UploadImage />
       </div>
       <div className="w-full border"></div>
       <div className="flex flex-col items-center h-full space-y-4">
@@ -27,7 +22,7 @@ export default function Upload() {
           추가 정보 입력을 통해 더 정확한 분석을 도와드립니다!
         </div>
         <div className="flex flex-col justify-start w-full h-full p-2">
-          <InfoInput uploadedFiles={uploadedFiles} />
+          <InfoInput />
         </div>
       </div>
     </main>

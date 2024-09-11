@@ -2,74 +2,105 @@
 import useNaverBookStore, { NaverBook } from "@/store/naverBookStore";
 import { BookCheck, Minus, Plus, Search } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import debounce from "lodash/debounce";
 
-interface Props {
-  onImageUploadComplete: (files: File[]) => void;
-}
-
-interface BooksResponse {
-  // lastBuildDate: string;
-  // total: number;
-  // start: number;
-  // display: number;
-  items: NaverBook[];
-}
-
-export default function UploadImage({ onImageUploadComplete }: Props) {
+export default function UploadImage() {
   const { naverBooks, addBook, removeBook } = useNaverBookStore(
     (state) => state
   );
   const [inputs, setInputs] = useState<string[]>([""]);
   const [searchResults, setSearchResults] = useState<NaverBook[][]>([]);
 
+  // const debouncedSearch = useCallback(
+  //   debounce(async (query: string, index: number) => {
+  //     if (query.trim() === "") return; // Prevent searching for empty input
+
+  //     const response = await fetch(`/api/searchBooks?query=${query}`);
+  //     const data = await response.json();
+
+  //     const books = data.items.map((item: any) => ({
+  //       title: item.title,
+  //       author: item.author,
+  //       isbn: item.isbn,
+  //       image: item.image,
+  //       publisher: item.publisher,
+  //     }));
+
+  //     const newSearchResults = [...searchResults];
+  //     newSearchResults[index] = books;
+  //     setSearchResults(newSearchResults);
+  //   }, 500), // 500ms delay
+  //   [searchResults]
+  // );
+
+  const debouncedSearch = useMemo(
+    () =>
+      debounce(async (query: string, index: number) => {
+        if (query.trim() === "") return; // Prevent searching for empty input
+
+        const response = await fetch(`/api/searchBooks?query=${query}`);
+        const data = await response.json();
+
+        const books = data.items.map((item: any) => ({
+          title: item.title,
+          author: item.author,
+          isbn: item.isbn,
+          image: item.image,
+          publisher: item.publisher,
+        }));
+
+        const newSearchResults = [...searchResults];
+        newSearchResults[index] = books;
+        setSearchResults(newSearchResults);
+      }, 750),
+    [searchResults]
+  );
+
   const handleInputChange = (value: string, index: number) => {
     const newInputs = [...inputs];
     newInputs[index] = value;
     setInputs(newInputs);
+    debouncedSearch(value, index);
   };
 
-  const handleSearch = async (query: string, index: number) => {
-    const response = await fetch(`/api/searchBooks?query=${query}`);
-    const data = await response.json();
+  // const handleSearch = async (query: string, index: number) => {
+  //   const response = await fetch(`/api/searchBooks?query=${query}`);
+  //   const data = await response.json();
 
-    const books = data.items.map((item: any) => ({
-      title: item.title,
-      author: item.author,
-      link: item.link,
-      image: item.image,
-    }));
-    // console.log(books);
+  //   const books = data.items.map((item: any) => ({
+  //     title: item.title,
+  //     author: item.author,
+  //     isbn: item.isbn,
+  //     image: item.image,
+  //     publisher: item.publisher,
+  //   }));
 
-    const newSearchResults = [...searchResults];
-    newSearchResults[index] = books;
-    setSearchResults(newSearchResults);
-  };
-
-  // const handleAddInput = () => {
-  //   setInputs([...inputs, ""]);
-  //   setSearchResults([...searchResults, []]);
+  //   const newSearchResults = [...searchResults];
+  //   newSearchResults[index] = books;
+  //   setSearchResults(newSearchResults);
   // };
 
   const handleSelectBook = (book: NaverBook, index: number) => {
     addBook(book);
-    // setSearchResults([]);
   };
 
   const handleRemoveBook = (index: number) => {
     removeBook(index);
   };
 
-  // const handleRemoveInput = (index: number) => {
-  //   const newInputs = inputs.filter((_, i) => i !== index);
-  //   const newSearchResults = searchResults.filter((_, i) => i !== index);
-  //   setInputs(newInputs);
-  //   setSearchResults(newSearchResults);
-  // };
+  useEffect(() => {
+    // Clean up the debounce function when component unmounts
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
 
   return (
     <div className="flex flex-col items-center w-full p-2 mt-10 border-2 border-gray-400 border-dotted rounded-xl">
-      <div className="text-xs text-left">{naverBooks.length}권 등록 완료</div>
+      <div className="text-xs text-left mb-2">
+        {naverBooks.length}권 등록 완료
+      </div>
       {naverBooks.map((book: NaverBook, index: number) => (
         <div key={index} className="flex items-center mb-2 w-full text-sm">
           <span>
@@ -91,12 +122,12 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
             onChange={(e) => handleInputChange(e.target.value, index)}
             className="border-2 border-gray-300 rounded-md p-2 w-full h-8 text-sm"
           />
-          <button
+          {/* <button
             onClick={() => handleSearch(input, index)}
             className="ml-2 w-8 h-8 flex items-center justify-center bg-white text-blue-500 border border-blue-500 rounded-md hover:bg-blue-500 hover:text-white transition-colors"
           >
-            <Search size={16} /> {/* 검색 아이콘 추가 */}
-          </button>
+            <Search size={16} /> 
+          </button> */}
         </div>
       ))}
       {searchResults.map((results, index) => (
@@ -117,8 +148,6 @@ export default function UploadImage({ onImageUploadComplete }: Props) {
                   alt={`${book.title} cover`}
                   width={30} // 너비 설정
                   height={40} // 3:4 비율에 맞춘 높이 설정
-                  placeholder="blur" // 이미지 로딩 중 블러 효과
-                  blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFklEQVR42mN8//HLfwYiAOOoQvoqBABbWyZJf74GZgAAAABJRU5ErkJggg==" // 블러 처리될 기본 이미지 (옵션)
                 />
               </div>
               <div className="flex flex-col w-full gap-2 text-gray-600 text-xs">

@@ -3,34 +3,38 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import useSuccessStore from "@/store/successStore";
+import useNaverBookStore, { NaverBook } from "@/store/naverBookStore";
 
-type FeedbackPostRequest = {
-  feedbackComment: string;
-  corrected: boolean;
-  quizId: number;
+type UploadInfo = {
+  nickname: string;
+  gender: string;
+  birth: string;
+  books: NaverBook[];
 };
 
-export function useUploadMutation() {
+export function useUploadBookMutations() {
   const router = useRouter(); // router 사용 설정
   const setIsSuccess = useSuccessStore((state) => state.setIsSuccess);
+  const { resetBooks } = useNaverBookStore((state) => state);
 
   return useMutation({
-    mutationFn: async (formData: FormData) => {
-      router.push("/survey");
-      await new Promise((resolve) => {
-        // 10초 후에 resolve 함수를 호출하여 Promise가 완료되었음을 알림
-        setTimeout(() => {
-          // console.log("데이터 처리 완료");
-          resolve("데이터 준비 완료");
-        }, 3 * 1000); // 3초 대기
-      });
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookshelves`, {
+    mutationFn: async (uploadInfo: UploadInfo) => {
+      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/flea/upload`, {
         method: "POST",
         credentials: "include",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(uploadInfo),
       });
     },
     onSuccess(response, variable) {
+      toast({
+        title: "등록에 성공하였습니다.",
+      });
+      router.push("/survey");
+
+      resetBooks();
       setIsSuccess(true);
     },
     onError() {
