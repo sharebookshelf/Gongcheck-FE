@@ -12,28 +12,6 @@ export default function UploadImage() {
   const [inputs, setInputs] = useState<string[]>([""]);
   const [searchResults, setSearchResults] = useState<NaverBook[][]>([]);
 
-  // const debouncedSearch = useCallback(
-  //   debounce(async (query: string, index: number) => {
-  //     if (query.trim() === "") return; // Prevent searching for empty input
-
-  //     const response = await fetch(`/api/searchBooks?query=${query}`);
-  //     const data = await response.json();
-
-  //     const books = data.items.map((item: any) => ({
-  //       title: item.title,
-  //       author: item.author,
-  //       isbn: item.isbn,
-  //       image: item.image,
-  //       publisher: item.publisher,
-  //     }));
-
-  //     const newSearchResults = [...searchResults];
-  //     newSearchResults[index] = books;
-  //     setSearchResults(newSearchResults);
-  //   }, 500), // 500ms delay
-  //   [searchResults]
-  // );
-
   const debouncedSearch = useMemo(
     () =>
       debounce(async (query: string, index: number) => {
@@ -53,7 +31,7 @@ export default function UploadImage() {
         const newSearchResults = [...searchResults];
         newSearchResults[index] = books;
         setSearchResults(newSearchResults);
-      }, 750),
+      }, 300),
     [searchResults]
   );
 
@@ -64,23 +42,6 @@ export default function UploadImage() {
     debouncedSearch(value, index);
   };
 
-  // const handleSearch = async (query: string, index: number) => {
-  //   const response = await fetch(`/api/searchBooks?query=${query}`);
-  //   const data = await response.json();
-
-  //   const books = data.items.map((item: any) => ({
-  //     title: item.title,
-  //     author: item.author,
-  //     isbn: item.isbn,
-  //     image: item.image,
-  //     publisher: item.publisher,
-  //   }));
-
-  //   const newSearchResults = [...searchResults];
-  //   newSearchResults[index] = books;
-  //   setSearchResults(newSearchResults);
-  // };
-
   const handleSelectBook = (book: NaverBook, index: number) => {
     addBook(book);
   };
@@ -90,7 +51,6 @@ export default function UploadImage() {
   };
 
   useEffect(() => {
-    // Clean up the debounce function when component unmounts
     return () => {
       debouncedSearch.cancel();
     };

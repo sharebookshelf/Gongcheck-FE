@@ -38,8 +38,6 @@ export default function Categorize() {
     router.push("/rank");
   }
 
-  // console.log(isError);
-
   if (
     isError &&
     error.message === "세션이 없거나 만료되었습니다. 책장을 다시 등록해주세요"
@@ -70,6 +68,25 @@ export default function Categorize() {
               name="items"
               render={({ field }) => (
                 <>
+                  {/* 모두 선택 버튼 추가 */}
+                  <FormItem className="cursor-pointer hover:bg-orange-50">
+                    <div className="flex flex-row items-center w-full space-x-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value.length === books.length}
+                          onCheckedChange={(checked) => {
+                            return checked
+                              ? field.onChange(books.map((item) => item.bookId))
+                              : field.onChange([]);
+                          }}
+                        />
+                      </FormControl>
+                      <FormLabel className="flex w-full h-full p-2 space-x-3 text-sm font-normal">
+                        모두 선택
+                      </FormLabel>
+                    </div>
+                  </FormItem>
+                  {/* 개별 책 항목 */}
                   {books.map((item) => (
                     <FormItem
                       key={item.bookId}

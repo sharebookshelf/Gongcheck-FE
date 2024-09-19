@@ -8,6 +8,7 @@ import FooterNav from "@/app/components/FooterNav";
 import ReactQueryProviders from "@/utils/ReactQueryProvider";
 import { Toaster } from "@/components/ui/toaster";
 import KakaoScript from "./result/components/KakaoScript";
+import { ThemeProvider } from "@/config/material-tailwind-theme-provider";
 
 export const metadata: Metadata = {
   title: "모두의 책장",
@@ -32,31 +33,33 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={notoSansKr.className}>
-        <ReactQueryProviders>
-          <div className="relative items-center justify-center min-h-screen">
-            <Image
-              src={backgroundImg}
-              alt="Background"
-              fill
-              quality={100}
-              priority
-              style={{
-                zIndex: -1,
-                objectFit: "cover",
-              }}
-            />
-            <div className="flex items-center justify-center w-full h-full bg-black bg-opacity-60">
-              <main className="relative flex flex-col h-screen w-full max-w-[450px] overflow-hidden">
-                <Header />
-                <div className="flex flex-col items-center justify-center h-full p-2 py-4 overflow-y-auto bg-white">
-                  {children}
-                </div>
-                <div className="border"></div>
-              </main>
+        <ThemeProvider>
+          <ReactQueryProviders>
+            <div className="relative items-center justify-center min-h-screen">
+              <Image
+                src={backgroundImg}
+                alt="Background"
+                fill
+                quality={100}
+                priority
+                style={{
+                  zIndex: -1,
+                  objectFit: "cover",
+                }}
+              />
+              <div className="flex items-center justify-center w-full h-full bg-black bg-opacity-60">
+                <main className="relative flex flex-col h-screen w-full max-w-[450px] overflow-hidden">
+                  <Header />
+                  <div className="flex flex-col items-center justify-center h-full p-2 py-4 overflow-y-auto bg-white">
+                    {children}
+                  </div>
+                  <div className="border"></div>
+                </main>
+              </div>
+              <Toaster />
             </div>
-            <Toaster />
-          </div>
-        </ReactQueryProviders>
+          </ReactQueryProviders>
+        </ThemeProvider>
       </body>
       <KakaoScript />
     </html>

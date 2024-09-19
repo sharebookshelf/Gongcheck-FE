@@ -23,8 +23,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import RadarChart from "./components/RadarChart";
 import { toast } from "@/components/ui/use-toast";
-// import { RefreshButton } from "./components/RefreshButton";
-import html2canvas from "html2canvas";
+import * as htmlToImage from "html-to-image";
+import { toPng, toJpeg } from "html-to-image";
 
 const labels = [
   "기타",
@@ -140,18 +140,17 @@ export default function Page() {
     .map((item) => item[1]);
 
   const captureAndDownload = () => {
-    const captureElement = document.getElementById("capture-area");
-    if (captureElement) {
-      html2canvas(captureElement).then((canvas) => {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = "capture.png";
+    htmlToImage
+      .toJpeg(document.getElementById("capture-area")!, { quality: 0.95 })
+      .then(function (dataUrl) {
+        var link = document.createElement("a");
+        link.download = "result_capture.jpeg";
+        link.href = dataUrl;
         link.click();
+        toast({
+          title: "이미지 저장에 성공했습니다.",
+        });
       });
-      toast({
-        title: "이미지 저장에 성공했습니다.",
-      });
-    }
   };
 
   return (
@@ -163,26 +162,30 @@ export default function Page() {
           </h1>
           <div
             id="capture-area"
-            className="flex flex-col items-center text-gray-700 w-full h-full p-4 space-y-10 border"
+            className="flex flex-col items-center bg-white text-gray-700 w-full h-full p-4 space-y-10 border"
           >
             <h2 className="text-xl">{typeInfo.type}</h2>
             <Image
-              className="rounded-md object-center"
-              width={330}
-              height={330}
+              className="w-full h-auto rounded-md aspect-square"
+              width={150}
+              height={150}
               priority
               src={typeInfo.image}
               alt={typeInfo.type}
             />
             <div className="font-semibold">책장 카테고리 별 분포 현황</div>
             <RadarChart />
-            <div className="text-xs">{`<${labels[topIndices[0]]}>과 <${
-              labels[topIndices[1]]
-            }> 카테고리가 많아요!`}</div>
+            <div className="text-xs">
+              {topIndices[1] === 0
+                ? `<${labels[topIndices[0]]}>에 관심이 많아요!`
+                : `<${labels[topIndices[0]]}>과 <${
+                    labels[topIndices[1]]
+                  }>에 관심이 많아요!`}
+            </div>
             <div className="font-light">
               <div className="font-extrabold text-sm">{typeInfo.analysis}</div>
               <br />
-              <div>{typeInfo.feature}</div>
+              <div className="text-base">{typeInfo.feature}</div>
               <br />
               <div>{typeInfo.readingMethod}</div>
             </div>
@@ -203,17 +206,17 @@ export default function Page() {
               이미지로 저장
             </button>
           </div>
-          <div className="mb-4 text-center text-base font-medium text-[#333333]">
+          {/* <div className="mb-4 text-center text-base font-medium text-[#333333]">
             나와 비슷한 성향의 사람들은 어떤 책을 갖고 있을까요?
-          </div>
-          <AlertDialogTrigger asChild>
+          </div> */}
+          {/* <AlertDialogTrigger asChild>
             <Button
               // onClick={onClick}
               className="w-full h-auto bg-[#F2994A] py-2 rounded-full font-bold text-white"
             >
               다른 사람 책장 구경하기
             </Button>
-          </AlertDialogTrigger>
+          </AlertDialogTrigger> */}
         </div>
         <ShareModal
           isOpen={isModalOpen}

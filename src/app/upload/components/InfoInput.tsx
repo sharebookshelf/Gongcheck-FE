@@ -1,4 +1,5 @@
 "use client";
+
 import { Input } from "@/components/ui/Input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/RadioGroup";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,12 +14,13 @@ import {
   FormMessage,
   Form,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button";
 import { useUploadMutation } from "../hooks/useUploadMutation";
 import { transformDate } from "@/lib/utils";
 import Loading from "@/app/components/loading";
 import { useUploadBookMutations } from "../hooks/useUploadBookMutation";
 import useNaverBookStore from "@/store/naverBookStore";
+import { Button } from "@material-tailwind/react";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
@@ -29,7 +31,7 @@ const userInfoSchema = z.object({
 
 export default function InfoInput() {
   const { naverBooks } = useNaverBookStore((state) => state);
-  const { mutate } = useUploadBookMutations();
+  const { mutate, isPending } = useUploadBookMutations();
 
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
@@ -125,12 +127,21 @@ export default function InfoInput() {
         />
         <div className="w-full flex justify-center">
           <Button
+            className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium text-lg"
+            placeholder="등록하기"
+            type="submit"
+            loading={isPending}
+            disabled={!naverBooks || naverBooks.length === 0}
+          >
+            등록하기
+          </Button>
+          {/* <Button
             className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
             type="submit"
             disabled={!naverBooks || naverBooks.length === 0}
           >
             등록하기
-          </Button>
+          </Button> */}
         </div>
       </form>
     </Form>
