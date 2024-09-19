@@ -35,6 +35,7 @@ export default function SurveyMainPage() {
   const isSuccess = useSuccessStore((state) => state.isSuccess);
 
   const { mutate } = useSurveyMutation();
+  console.log(isSuccess);
 
   const handleSubmit = () => {
     mutate(question);

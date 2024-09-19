@@ -28,8 +28,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import RadarChart from "./components/RadarChart";
 import { toast } from "@/components/ui/use-toast";
-import { RefreshButton } from "./components/RefreshButton";
-import html2canvas from "html2canvas";
+import * as htmlToImage from "html-to-image";
+// import { toPng, toJpeg } from "html-to-image";
 
 const labels = [
   "기타",
@@ -144,18 +144,17 @@ export default function Page() {
     .map((item) => item[1]);
 
   const captureAndDownload = () => {
-    const captureElement = document.getElementById("capture-area");
-    if (captureElement) {
-      html2canvas(captureElement).then((canvas) => {
-        const link = document.createElement("a");
-        link.href = canvas.toDataURL("image/png");
-        link.download = "capture.png";
+    htmlToImage
+      .toJpeg(document.getElementById("capture-area")!, { quality: 0.95 })
+      .then(function (dataUrl) {
+        var link = document.createElement("a");
+        link.download = "result_capture.jpeg";
+        link.href = dataUrl;
         link.click();
+        toast({
+          title: "이미지 저장에 성공했습니다.",
+        });
       });
-      toast({
-        title: "이미지 저장에 성공했습니다.",
-      });
-    }
   };
 
   return (

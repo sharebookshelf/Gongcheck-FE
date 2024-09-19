@@ -16,7 +16,6 @@ export function useUploadMutation() {
 
   return useMutation({
     mutationFn: async (formData: FormData) => {
-      router.push("/survey");
       await new Promise((resolve) => {
         // 10초 후에 resolve 함수를 호출하여 Promise가 완료되었음을 알림
         setTimeout(() => {
@@ -24,14 +23,27 @@ export function useUploadMutation() {
           resolve("데이터 준비 완료");
         }, 3 * 1000); // 3초 대기
       });
+      router.push("/survey");
       // console.log(process.env.NEXT_PUBLIC_API_URL);
-      return fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookshelves`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/bookshelves`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json(); // 에러 메시지를 포함할 수 있는 응답의 본문
+        throw {
+          status: response.status,
+          message: errorData.message ?? "에러가 발생했습니다.",
+        }; // 에러 객체를 throw
+      }
     },
     onSuccess(response, variable) {
+      console.log("hihi");
       setIsSuccess(true);
     },
     onError() {
@@ -42,6 +54,7 @@ export function useUploadMutation() {
         // action: <ToastAction altText="Try again">Try again</ToastAction>,
       });
       router.replace("/");
+      router.refresh();
     },
   });
 }

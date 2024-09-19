@@ -13,10 +13,11 @@ import {
   FormMessage,
   Form,
 } from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
+
 import { useUploadMutation } from "../hooks/useUploadMutation";
 import { transformDate } from "@/lib/utils";
 import Loading from "@/app/components/loading";
+import { Button } from "@material-tailwind/react";
 
 // Zod 스키마 정의
 const userInfoSchema = z.object({
@@ -35,7 +36,8 @@ interface Data {
 }
 
 export default function InfoInput({ uploadedFiles }: Props) {
-  const { mutate, isPending } = useUploadMutation();
+  const { mutate, isPending, isSuccess, isIdle } = useUploadMutation();
+  console.log(isPending, isSuccess, isIdle);
 
   const form = useForm<z.infer<typeof userInfoSchema>>({
     resolver: zodResolver(userInfoSchema),
@@ -59,10 +61,6 @@ export default function InfoInput({ uploadedFiles }: Props) {
 
     mutate(formData);
   };
-
-  if (isPending) {
-    return <Loading />;
-  }
 
   return (
     <Form {...form}>
@@ -139,8 +137,10 @@ export default function InfoInput({ uploadedFiles }: Props) {
         />
         <div className="w-full flex justify-center">
           <Button
-            className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium"
+            className="flex justify-center w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium text-base"
+            placeholder="등록하기"
             type="submit"
+            loading={isPending}
             disabled={!uploadedFiles || uploadedFiles.length === 0}
           >
             등록하기

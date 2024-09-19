@@ -1,15 +1,25 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import logo from "../../public/images/logo.png";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
+import { Button } from "@material-tailwind/react";
+import { useState } from "react";
 
 export default function Home() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  const navigateToUpload = () => {
+  const navigateToUpload = async () => {
+    setLoading(true);
+
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve("데이터 준비 완료");
+      }, 3 * 1000);
+    });
+
     router.push("/upload");
   };
 
@@ -52,8 +62,9 @@ export default function Home() {
         </div>
       </div>
       <Button
+        placeholder="등록하기"
         onClick={navigateToUpload}
-        className="mt-10 bg-[#F59E0B] text-white w-full"
+        className="mt-10 bg-[#F59E0B] hover:bg-[#b98f47] text-white w-full rounded-full flex justify-center"
       >
         시작하기
       </Button>

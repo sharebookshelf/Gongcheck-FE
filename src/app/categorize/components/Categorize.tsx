@@ -70,6 +70,23 @@ export default function Categorize() {
               name="items"
               render={({ field }) => (
                 <>
+                  <FormItem className="cursor-pointer hover:bg-orange-50">
+                    <div className="flex flex-row items-center w-full space-x-3">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value.length === books.length}
+                          onCheckedChange={(checked) => {
+                            return checked
+                              ? field.onChange(books.map((item) => item.bookId))
+                              : field.onChange([]);
+                          }}
+                        />
+                      </FormControl>
+                      <FormLabel className="flex w-full h-full p-2 space-x-3 text-sm font-normal">
+                        모두 선택
+                      </FormLabel>
+                    </div>
+                  </FormItem>
                   {books.map((item) => (
                     <FormItem
                       key={item.bookId}
