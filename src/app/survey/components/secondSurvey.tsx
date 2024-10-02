@@ -35,8 +35,8 @@ export default function SecondSurvey({
       <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50"></div>
       <div className="absolute flex flex-col items-center justify-center w-full h-full p-4 text-white">
         <h2 className="mb-8 text-2xl font-bold">2/3 Step</h2>
-        <p className="mb-8 text-lg text-center">
-          읽을 책을 보통 어디서 찾으시나요?
+        <p className="mb-8 text-center">
+          독서 후 읽은 내용과 관련되어 연관 활동을 이어가시나요?
         </p>
         <div className="w-full space-y-4">
           <motion.button
@@ -51,7 +51,7 @@ export default function SecondSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            집
+            관련 서적이나 강의를 주로 찾아봄
           </motion.button>
 
           <motion.button
@@ -66,7 +66,7 @@ export default function SecondSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            도서관
+            저자의 주요 다른 활동을 찾아보거나 참여함(북토크 등)
           </motion.button>
 
           <motion.button
@@ -81,7 +81,7 @@ export default function SecondSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            온라인 도서 판매처
+            관련 책을 읽은 다른 사람들과 감상평을 나눔
           </motion.button>
 
           <motion.button
@@ -96,7 +96,7 @@ export default function SecondSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            오프라인 서점
+            활동 없음
           </motion.button>
         </div>
         <div className="relative mb-8">

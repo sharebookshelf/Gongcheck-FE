@@ -37,7 +37,7 @@ export default function FirstSurvey({
       <div className="absolute flex flex-col items-center justify-center w-full h-full p-4 text-white">
         <h2 className="mb-8 text-2xl font-bold">1/3 Step</h2>
         <p className="mb-8 text-lg text-center">
-          책과 관련하여 어떤 고민을 갖고 계신가요?
+          주로 어떤 목적으로 책을 읽으시나요?
         </p>
         <div className="w-full space-y-4">
           <motion.button
@@ -52,7 +52,7 @@ export default function FirstSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            어떤 책을 읽어야할 지 모르겠어요.
+            자기 계발을 위해
           </motion.button>
 
           <motion.button
@@ -67,7 +67,7 @@ export default function FirstSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            책에 손이 잘 안 가요.
+            전공 분야의 능력 상승을 위해
           </motion.button>
 
           <motion.button
@@ -82,7 +82,7 @@ export default function FirstSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            다른 사람들과 책 정보를 공유하고 싶어요.
+            마음의 평안을 위해
           </motion.button>
 
           <motion.button
@@ -97,7 +97,7 @@ export default function FirstSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            책은 많은데 읽을 책이 없어요.
+            이유없음(취미, 습관 등)
           </motion.button>
         </div>
         <div className="relative mb-8">

@@ -127,7 +127,7 @@ export default function InfoInput() {
         />
         <div className="w-full flex justify-center">
           <Button
-            className="w-full bg-[#F59E0B] text-white py-3 rounded-lg font-medium text-lg"
+            className="flex w-full bg-[#F59E0B] text-white justify-center py-3 rounded-lg font-medium text-lg"
             placeholder="등록하기"
             type="submit"
             loading={isPending}
