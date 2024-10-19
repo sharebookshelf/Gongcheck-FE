@@ -2,14 +2,17 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useSurveyStore from "@/store/surveyStore";
 import { useSurveyMutation } from "./hooks/useSurveyMutation";
 import { SyncLoader } from "react-spinners";
 import useSuccessStore from "@/store/successStore";
-import FirstSurvey from "./components/FirstSurvey";
-import SecondSurvey from "./components/SecondSurvey";
-import ThirdSurvey from "./components/ThirdSurvey";
+import ThirdSurvey from "./components/thirdSurvey";
+import SecondSurvey from "./components/secondSurvey";
+import FirstSurvey from "./components/firstSurvey";
+import { ProgressWithValue } from "@/components/ui/progress-with-value";
+
+const PERCENTAGE = [0, 10, 15, 30, 45, 50, 65, 80, 90, 100];
 
 const variants = {
   enter: (direction: number) => ({
@@ -30,11 +33,28 @@ const variants = {
 export default function SurveyMainPage() {
   const [questionPageNumber, setQustionPageNumber] = useState(1);
   const [direction, setDirection] = useState(0);
+  const [value, setValue] = useState(0);
+
+  const indexRef = useRef(0);
 
   const question = useSurveyStore((state) => state.question);
   const isSuccess = useSuccessStore((state) => state.isSuccess);
 
   const { mutate } = useSurveyMutation();
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (indexRef.current >= PERCENTAGE.length) {
+        clearInterval(interval);
+        return; // 마지막 값에 도달하면 interval을 정리하고 종료
+      }
+
+      setValue(PERCENTAGE[indexRef.current]);
+      indexRef.current++;
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const handleSubmit = () => {
     mutate(question);
@@ -48,6 +68,11 @@ export default function SurveyMainPage() {
   return (
     <div className="relative flex flex-col w-full h-full space-y-2 overflow-hidden">
       <div className="relative flex-grow">
+        <ProgressWithValue
+          className="absolute top-5  z-50"
+          value={value}
+          position={"start"}
+        />
         <AnimatePresence initial={false} custom={direction}>
           <motion.div
             key={questionPageNumber}

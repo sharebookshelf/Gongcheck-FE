@@ -18,13 +18,10 @@ export function useUploadMutation() {
     mutationFn: async (formData: FormData) => {
       router.push("/survey");
       await new Promise((resolve) => {
-        // 10초 후에 resolve 함수를 호출하여 Promise가 완료되었음을 알림
         setTimeout(() => {
-          // console.log("데이터 처리 완료");
           resolve("데이터 준비 완료");
-        }, 3 * 1000); // 3초 대기
+        }, 3 * 1000);
       });
-      // console.log(process.env.NEXT_PUBLIC_API_URL);
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookshelves`, {
         method: "POST",
         credentials: "include",

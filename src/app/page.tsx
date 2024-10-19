@@ -5,9 +5,22 @@ import Image from "next/image";
 import logo from "../../public/images/logo.png";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
+import { ProgressWithValue } from "@/components/ui/progress-with-value";
+import { useEffect, useState } from "react";
+const PERCENTAGE = [0, 10, 15, 30, 45, 50, 65, 80, 90, 100];
 
 export default function Home() {
   const router = useRouter();
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setValue(PERCENTAGE[index % PERCENTAGE.length]);
+      index++;
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   const navigateToUpload = () => {
     router.push("/upload");
