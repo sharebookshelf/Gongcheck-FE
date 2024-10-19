@@ -20,7 +20,7 @@ export function useUploadMutation() {
       await new Promise((resolve) => {
         setTimeout(() => {
           resolve("데이터 준비 완료");
-        }, 3 * 1000);
+        }, 30 * 1000);
       });
       return fetch(`${process.env.NEXT_PUBLIC_API_URL}/bookshelves`, {
         method: "POST",
