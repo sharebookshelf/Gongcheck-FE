@@ -23,6 +23,7 @@ export const getResultByUserId = async () => {
 interface ResultResponse {
   readingType: number;
   categoryCounts: number[];
+  bookCountInfo: any;
 }
 interface Response {
   data: ResultResponse;

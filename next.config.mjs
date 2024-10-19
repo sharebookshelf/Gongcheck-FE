@@ -45,6 +45,17 @@ const nextConfig = {
         port: "",
         // pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "nl.go.kr",
+        port: "",
+        // pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "shopping-phinf.pstatic.net",
+        port: "",
+      },
     ],
   },
 };
