@@ -62,6 +62,13 @@ export default function Page() {
     analysis: string;
     feature: string;
     readingMethod: string;
+    recommendBook: {
+      imageUrl: string;
+      title: string;
+      author: string;
+      publisher: string;
+      description: string;
+    };
   } | null>(null);
 
   const copyToClipboard = () => {
@@ -183,8 +190,8 @@ export default function Page() {
             />
             <div className="font-semibold">책장 카테고리 별 분포 현황</div>
             <RadarChart />
-            <RadarChart2 topIndices={topIndices} />
-            <BarChart2 topIndices={topIndices} />
+            {/* <RadarChart2 topIndices={topIndices} /> */}
+            {/* <BarChart2 topIndices={topIndices} /> */}
             <BarChartComponenet />
             {/* <VerticalBarChartComponenet /> */}
             <div className="text-xs">
@@ -200,6 +207,24 @@ export default function Page() {
               <div>{typeInfo.feature}</div>
               <br />
               <div>{typeInfo.readingMethod}</div>
+            </div>
+
+            <div className="font-light px-4 text-sm space-y-4 border-t border-gray-200 pt-4">
+              <div>같은 성향을 가진 사람들이 좋아하는 책을 추천드립니다!</div>
+              <div className="flex w-full space-x-2 border rounded-md border-gray-400 p-2">
+                <Image
+                  src={typeInfo.recommendBook.imageUrl}
+                  alt="recommend_book"
+                  width={100}
+                  height={100}
+                />
+                <div className="flex flex-col text-xs space-y-2 text-gray-500">
+                  <div>제목: {typeInfo.recommendBook.title}</div>
+                  <div>저자: {typeInfo.recommendBook.author}</div>
+                  <div>출판사: {typeInfo.recommendBook.publisher}</div>
+                </div>
+              </div>
+              <div className="">{typeInfo.recommendBook.description}</div>
             </div>
           </div>
           {/* <Radar options={chartOptions} data={chartData} /> */}
