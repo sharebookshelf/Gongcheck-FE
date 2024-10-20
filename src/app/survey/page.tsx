@@ -69,7 +69,7 @@ export default function SurveyMainPage() {
     <div className="relative flex flex-col w-full h-full space-y-2 overflow-hidden">
       <div className="relative flex-grow">
         <ProgressWithValue
-          className="absolute top-5  z-50"
+          className="absolute top-5 z-50"
           value={value}
           position={"start"}
         />

@@ -32,9 +32,9 @@ export default function ThirdSurvey({
       />
       <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50"></div>
       <div className="absolute flex flex-col items-center justify-center w-full h-full p-4 text-white">
-        <h2 className="mb-8 text-2xl font-bold">3/3 Step</h2>
+        {/* <h2 className="mb-8 text-2xl font-bold">3/3 Step</h2> */}
         <p className="mb-8 text-lg text-center">
-          다음 중 저희 서비스 중에서 가장 끌리는 것은 무엇인가요?
+          다음 저희 서비스 중에서 가장 끌리는 기능은 무엇인가요?
         </p>
         <div className="w-full space-y-4">
           <motion.button
@@ -49,12 +49,12 @@ export default function ThirdSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            내 성향과 맞는 책을 추천
+            내 책장에 읽은 책과 안 읽은 책을 손쉽게 관리
           </motion.button>
 
           <motion.button
             onClick={() => handleQuestionClick(2)}
-            className="w-full py-4 text-black bg-white rounded-lg shadow"
+            className="w-full p-4 text-black bg-white rounded-lg shadow"
             initial={{ opacity: 0.6 }}
             whileHover={{ scale: 1.05 }}
             animate={{
@@ -64,7 +64,7 @@ export default function ThirdSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            요즘 인기 많은 책을 추천
+            내 독서 성향 및 교육 성향에 따라 관련 컨텐츠(강의 등)을 추천/연계
           </motion.button>
 
           <motion.button
@@ -79,12 +79,12 @@ export default function ThirdSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            나와 성향이 비슷한 사람들끼리의 독서모임
+            다른 사람의 책장과 인플루언서의 책장을 컨텐츠로 제공
           </motion.button>
 
           <motion.button
             onClick={() => handleQuestionClick(4)}
-            className="w-full py-4 text-black bg-white rounded-lg shadow"
+            className="w-full p-4 text-black bg-white rounded-lg shadow"
             initial={{ opacity: 0.6 }}
             whileHover={{ scale: 1.05 }}
             animate={{
@@ -94,7 +94,7 @@ export default function ThirdSurvey({
             whileTap={{ scale: 0.9 }}
             whileInView={{ opacity: 1 }}
           >
-            책 이야기를 나눌 수 있는 커뮤니티
+            내 책장을 캐릭터로 예쁘게 꾸미고, 다른 사람들과 상호작용하는 공간
           </motion.button>
         </div>
         <div className="relative mb-8">
