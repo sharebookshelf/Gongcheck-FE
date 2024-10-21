@@ -5,21 +5,18 @@ import Image from "next/image";
 import logo from "../../public/images/logo.png";
 import { useRouter } from "next/navigation";
 import Head from "next/head";
-import { ProgressWithValue } from "@/components/ui/progress-with-value";
-import { useEffect, useState } from "react";
-const PERCENTAGE = [0, 10, 15, 30, 45, 50, 65, 80, 90, 100];
+import { useEffect } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Cookies } from "react-cookie";
 
 export default function Home() {
   const router = useRouter();
-  const [value, setValue] = useState(0);
+  const queryClient = useQueryClient();
+  const cookies = new Cookies();
 
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setValue(PERCENTAGE[index % PERCENTAGE.length]);
-      index++;
-    }, 1000);
-    return () => clearInterval(interval);
+    queryClient.clear();
+    cookies.set("readingType", "");
   }, []);
 
   const navigateToUpload = () => {
@@ -33,11 +30,8 @@ export default function Home() {
       </Head>
       <div className="flex flex-col items-center justify-center p-4 text-center">
         <Image
-          // src="https://www.nl.go.kr/seoji/fu/ecip/dbfiles/CIP_FILES_TBL/2022/01/06/9791191714050.jpg"
           src={logo}
           alt="Background"
-          // width={100}
-          // height={100}
           quality={100}
           style={{
             width: "150px",

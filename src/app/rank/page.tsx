@@ -9,13 +9,15 @@ import { getBackgroundColor } from "./lib/getBackgroundColor";
 import { useUpdateRankMutation } from "./hooks/useUpdateRankMutation";
 import { useBookQuery } from "../categorize/hooks/useBookQuery";
 import Loading from "../components/loading";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function Rank() {
   const { data: books } = useBookQuery();
   const { completedBookIds } = useBookStore((state) => state);
 
   const [selectedBookIds, setSelectedBookIds] = useState<Array<number>>([]);
-  const { mutate } = useUpdateRankMutation();
+  const { mutate, isPending } = useUpdateRankMutation();
 
   if (!books) {
     return <Loading />;
@@ -100,11 +102,24 @@ export default function Rank() {
             </div>
           ))}
       </div>
+      {/* <LoadingButton
+        onClick={handleSubmitButton}
+        className="bg-[#F59E0B] text-white w-full"
+        loading={isPending}
+      >
+        분석하기
+      </LoadingButton> */}
       <Button
         onClick={handleSubmitButton}
         className="bg-[#F59E0B] text-white w-full"
+        disabled={isPending}
       >
         분석하기
+        {isPending && (
+          <Loader2
+            className={cn("h-4 w-4 animate-spin", isPending && "mr-2")}
+          />
+        )}
       </Button>
     </main>
   );
