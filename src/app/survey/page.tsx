@@ -51,7 +51,7 @@ export default function SurveyMainPage() {
 
       setValue(PERCENTAGE[indexRef.current]);
       indexRef.current++;
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);

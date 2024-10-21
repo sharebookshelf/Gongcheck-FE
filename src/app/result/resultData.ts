@@ -26,7 +26,7 @@ export const readingTypeInfo = {
     readingMethod:
       "철학적 질문을 중심으로 서적을 선택하고, 읽은 내용에 대해 깊이 생각하며 기록합니다. 다양한 철학자의 저작을 읽고, 그들의 관점을 비교 분석하는 것이 유익합니다.",
     recommendBook: {
-      imageUrl: "https://image.yes24.com/goods/117631488/XL",
+      imageUrl: "https://image.yes24.com/goods/104205788/XL",
       title: "철학의 쓸모",
       author: "로랑스 드빌레르 저",
       publisher: "피카(FIKA)",
