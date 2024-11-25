@@ -7,9 +7,9 @@ import useSurveyStore from "@/store/surveyStore";
 import { useSurveyMutation } from "./hooks/useSurveyMutation";
 import { SyncLoader } from "react-spinners";
 import useSuccessStore from "@/store/successStore";
-import FirstSurvey from "./components/FirstSurvey";
-import SecondSurvey from "./components/SecondSurvey";
-import ThirdSurvey from "./components/ThirdSurvey";
+import FirstSurvey from "./components/firstSurvey";
+import SecondSurvey from "./components/secondSurvey";
+import ThirdSurvey from "./components/thirdSurvey";
 
 const variants = {
   enter: (direction: number) => ({
