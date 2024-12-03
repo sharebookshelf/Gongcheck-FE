@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import useSurveyStore from "@/store/surveyStore";
 import { SurveyPageProps } from "../../../../../types/type";
 import Image from "next/image";
-import bg_image from "../../../../public/images/surveyImage3.png";
+import bg_image from "../../../../../../public/images/surveyImage3.png";
 
 export default function ThirdSurvey({
   setQuestionPageNumber,

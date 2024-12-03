@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Image from "next/image";
-import kakaoIcon from "../../../../public/images/kakaotalk_sharing_btn_small.png";
+import kakaoIcon from "../../../../../../public/images/kakaotalk_sharing_btn_small.png";
 import { Copy, Link, X } from "lucide-react";
 
 interface ShareModalProps {
